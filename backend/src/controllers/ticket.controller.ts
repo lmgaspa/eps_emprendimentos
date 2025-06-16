@@ -1,74 +1,70 @@
 import { Request, Response, NextFunction } from 'express';
-import { pool } from '../config/db';
 import { v4 as uuidv4 } from 'uuid';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import Ticket from '../models/Ticket';
 import { sendTicketEmail } from '../utils/email';
 
 export const createTicket = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const {
+      cliente, empresa, cpf, cnpj, emailEmpresa, telefone, whatsapp, descricaoServico,
+    } = req.body;
+
+    const notaServico = `NS-${Date.now()}`;
+    const createdAt = new Date();
+
+    const newTicket = new Ticket({
       cliente,
       empresa,
       cpf,
-      cnpj, 
+      cnpj,
       emailEmpresa,
       telefone,
       whatsapp,
       descricaoServico,
-    } = req.body;
+      notaServico,
+      createdAt
+    });
 
-    const id = uuidv4();
-    const notaServico = `NS-${Date.now()}`;
-    const createdAt = new Date();
+    const saved = await newTicket.save();
 
-    const result = await pool.query(
-      `INSERT INTO tickets(id, cliente, empresa, cpf, cnpj, emailEmpresa, telefone, whatsapp, descricaoServico, notaServico, createdAt)
-       VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *`,
-      [id, cliente, empresa, cpf, cnpj, emailEmpresa, telefone, whatsapp, descricaoServico, notaServico, createdAt]
-    );
+    const formattedDate = format(saved.createdAt ?? new Date(), "dd/MM/yyyy HH:mm", { locale: ptBR });
 
-    const ticket = result.rows[0];
-
-    if (ticket.createdAt) {
-      ticket.createdAt = format(new Date(ticket.createdAt), "dd/MM/yyyy HH:mm", { locale: ptBR });
-    }
-
-    if (ticket.emailEmpresa) {
-      const assunto = `Confirmação do Ticket - ${ticket.notaServico}`;
+    if (emailEmpresa) {
+      const assunto = `Confirmação do Ticket - ${notaServico}`;
       const mensagem = `
-        <p>Olá ${ticket.cliente},</p>
+        <p>Olá ${cliente},</p>
         <p>Seu ticket foi registrado com sucesso com os seguintes detalhes:</p>
         <ul>
-          <li><strong>Empresa:</strong> ${ticket.empresa}</li>
-          <li><strong>Serviço:</strong> ${ticket.descricaoServico}</li>
-          <li><strong>Nota de Serviço:</strong> ${ticket.notaServico}</li>
-          <li><strong>Data:</strong> ${ticket.createdAt}</li>
+          <li><strong>Empresa:</strong> ${empresa}</li>
+          <li><strong>Serviço:</strong> ${descricaoServico}</li>
+          <li><strong>Nota de Serviço:</strong> ${notaServico}</li>
+          <li><strong>Data:</strong> ${formattedDate}</li>
         </ul>
         <p>Responderemos em breve!</p>
       `;
-      await sendTicketEmail(ticket.emailEmpresa, assunto, mensagem);
+      await sendTicketEmail(emailEmpresa, assunto, mensagem);
     }
 
-    const adminAssunto = `Novo ticket criado - ${ticket.notaServico}`;
     const adminMensagem = `
       <p>Um novo ticket foi criado com os seguintes dados:</p>
       <ul>
-        <li><strong>Cliente:</strong> ${ticket.cliente}</li>
-        <li><strong>Empresa:</strong> ${ticket.empresa}</li>
-        <li><strong>CPF:</strong> ${ticket.cpf || 'N/A'}</li>
-        <li><strong>CNPJ:</strong> ${ticket.cnpj || 'N/A'}</li>
-        <li><strong>Telefone:</strong> ${ticket.telefone || 'N/A'}</li>
-        <li><strong>WhatsApp:</strong> ${ticket.whatsapp || 'N/A'}</li>
-        <li><strong>Email:</strong> ${ticket.emailEmpresa || 'N/A'}</li>
-        <li><strong>Serviço:</strong> ${ticket.descricaoServico}</li>
-        <li><strong>Nota de Serviço:</strong> ${ticket.notaServico}</li>
-        <li><strong>Data:</strong> ${ticket.createdAt}</li>
+        <li><strong>Cliente:</strong> ${cliente}</li>
+        <li><strong>Empresa:</strong> ${empresa}</li>
+        <li><strong>CPF:</strong> ${cpf || 'N/A'}</li>
+        <li><strong>CNPJ:</strong> ${cnpj || 'N/A'}</li>
+        <li><strong>Telefone:</strong> ${telefone || 'N/A'}</li>
+        <li><strong>WhatsApp:</strong> ${whatsapp || 'N/A'}</li>
+        <li><strong>Email:</strong> ${emailEmpresa || 'N/A'}</li>
+        <li><strong>Serviço:</strong> ${descricaoServico}</li>
+        <li><strong>Nota de Serviço:</strong> ${notaServico}</li>
+        <li><strong>Data:</strong> ${formattedDate}</li>
       </ul>
     `;
-    await sendTicketEmail('luhmgasparetto@gmail.com', adminAssunto, adminMensagem);
+    await sendTicketEmail('luhmgasparetto@gmail.com', `Novo ticket criado - ${notaServico}`, adminMensagem);
 
-    res.status(201).json(ticket);
+    res.status(201).json({ ...saved.toObject(), createdAt: formattedDate });
   } catch (err) {
     next(err);
   }
@@ -77,16 +73,14 @@ export const createTicket = async (req: Request, res: Response, next: NextFuncti
 export const getTicketById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { id } = req.params;
-    const result = await pool.query('SELECT * FROM tickets WHERE id = $1', [id]);
-    if (result.rows.length === 0) {
+    const ticket = await Ticket.findById(id);
+    if (!ticket) {
       res.status(404).json({ message: 'Ticket não encontrado' });
       return;
     }
-    const ticket = result.rows[0];
-    if (ticket.createdAt) {
-      ticket.createdAt = format(new Date(ticket.createdAt), "dd/MM/yyyy HH:mm", { locale: ptBR });
-    }
-    res.json(ticket);
+
+    const formattedDate = format(ticket.createdAt ?? new Date(), "dd/MM/yyyy HH:mm", { locale: ptBR });
+    res.json({ ...ticket.toObject(), createdAt: formattedDate });
   } catch (err) {
     next(err);
   }
@@ -95,14 +89,14 @@ export const getTicketById = async (req: Request, res: Response, next: NextFunct
 export const getTicketsByCliente = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { cliente } = req.params;
-    const result = await pool.query('SELECT * FROM tickets WHERE cliente ILIKE $1 ORDER BY createdAt DESC', [`%${cliente}%`]);
-    const tickets = result.rows.map(ticket => {
-      if (ticket.createdAt) {
-        ticket.createdAt = format(new Date(ticket.createdAt), "dd/MM/yyyy HH:mm", { locale: ptBR });
-      }
-      return ticket;
-    });
-    res.json(tickets);
+    const tickets = await Ticket.find({ cliente: { $regex: cliente, $options: 'i' } }).sort({ createdAt: -1 });
+
+    const formatted = tickets.map(ticket => ({
+      ...ticket.toObject(),
+      createdAt: format(ticket.createdAt ?? new Date(), "dd/MM/yyyy HH:mm", { locale: ptBR }),
+    }));
+
+    res.json(formatted);
   } catch (err) {
     next(err);
   }
@@ -111,16 +105,15 @@ export const getTicketsByCliente = async (req: Request, res: Response, next: Nex
 export const getTicketByNota = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { notaServico } = req.params;
-    const result = await pool.query('SELECT * FROM tickets WHERE notaServico = $1', [notaServico]);
-    if (result.rows.length === 0) {
+    const ticket = await Ticket.findOne({ notaServico });
+
+    if (!ticket) {
       res.status(404).json({ message: 'Ticket não encontrado pela nota de serviço' });
       return;
     }
-    const ticket = result.rows[0];
-    if (ticket.createdAt) {
-      ticket.createdAt = format(new Date(ticket.createdAt), "dd/MM/yyyy HH:mm", { locale: ptBR });
-    }
-    res.json(ticket);
+
+    const formattedDate = format(ticket.createdAt ?? new Date(), "dd/MM/yyyy HH:mm", { locale: ptBR });
+    res.json({ ...ticket.toObject(), createdAt: formattedDate });
   } catch (err) {
     next(err);
   }
@@ -128,14 +121,14 @@ export const getTicketByNota = async (req: Request, res: Response, next: NextFun
 
 export const getAllTickets = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const result = await pool.query('SELECT * FROM tickets ORDER BY createdAt DESC');
-    const tickets = result.rows.map(ticket => {
-      if (ticket.createdAt) {
-        ticket.createdAt = format(new Date(ticket.createdAt), "dd/MM/yyyy HH:mm", { locale: ptBR });
-      }
-      return ticket;
-    });
-    res.json(tickets);
+    const tickets = await Ticket.find().sort({ createdAt: -1 });
+
+    const formatted = tickets.map(ticket => ({
+      ...ticket.toObject(),
+      createdAt: format(ticket.createdAt ?? new Date(), "dd/MM/yyyy HH:mm", { locale: ptBR }),
+    }));
+
+    res.json(formatted);
   } catch (err) {
     next(err);
   }
