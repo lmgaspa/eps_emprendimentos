@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
+// Estende a interface do Express para incluir `req.user`
 declare module 'express-serve-static-core' {
   interface Request {
     user?: JwtPayload | string;
