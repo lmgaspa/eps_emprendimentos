@@ -11,6 +11,14 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/node": "^24.0.1",
+    "@types/nodemailer": "^6.4.17",
+    "@types/pg": "^8.15.4",
+    "@types/uuid": "^10.0.0",
     "axios": "^1.10.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
@@ -20,16 +28,8 @@
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^7.0.3",
     "pg": "^8.16.0",
-    "uuid": "^11.1.0",
     "typescript": "^5.8.3",
-    "@types/bcrypt": "^5.0.2",
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.3",
-    "@types/jsonwebtoken": "^9.0.9",
-    "@types/node": "^24.0.1",
-    "@types/nodemailer": "^6.4.17",
-    "@types/pg": "^8.15.4",
-    "@types/uuid": "^10.0.0"
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "ts-node-dev": "^2.0.0"
