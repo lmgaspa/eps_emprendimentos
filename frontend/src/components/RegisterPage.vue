@@ -34,19 +34,61 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const name = ref('')
 const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
+const role = ref('user') // padrão
+const router = useRouter()
 
-const handleRegister = () => {
+const handleRegister = async () => {
   if (password.value !== confirmPassword.value) {
     alert('As senhas não coincidem.')
     return
   }
 
-  console.log({ name: name.value, email: email.value, password: password.value })
+  const token = localStorage.getItem('token')
+  if (!token) {
+    alert('Você precisa estar logado como administrador para registrar.')
+    router.push('/login')
+    return
+  }
+
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]))
+    if (payload.role !== 'admin') {
+      alert('Apenas administradores podem registrar novos usuários.')
+      return
+    }
+
+    const response = await fetch('http://localhost:3000/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        nome: name.value,
+        email: email.value,
+        password: password.value,
+        role: role.value
+      })
+    })
+
+    if (!response.ok) {
+      const err = await response.json()
+      alert(err.message || 'Erro ao registrar usuário.')
+      return
+    }
+
+    alert('Usuário registrado com sucesso!')
+    router.push('/dashboard')
+  } catch (error) {
+    console.error(error)
+    alert('Erro ao tentar registrar usuário.')
+  }
 }
 </script>
 
