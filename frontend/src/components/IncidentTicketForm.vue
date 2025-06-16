@@ -1,11 +1,10 @@
 <template>
   <div class="d-flex flex-column align-items-center bg-gradient-custom full-height">
-    <div class="my-5">
+    <div v-if="startStep === 0" class="my-5">
       <button class="btn btn-success btn-lg" @click="startStep = 1">Iniciar Cadastro</button>
     </div>
 
-    <!-- Etapa 1: Escolha entre CPF ou CNPJ -->
-    <div v-if="startStep === 1" class="card p-4 w-100" style="max-width: 600px;">
+    <div v-if="startStep === 1" class="card p-4 mt-4 w-100" style="max-width: 600px;">
       <h4 class="mb-3">Você quer usar CPF ou CNPJ?</h4>
       <div class="d-flex justify-content-around">
         <button class="btn btn-outline-primary" @click="selectCpfCnpj('cpf')">CPF</button>
@@ -13,7 +12,6 @@
       </div>
     </div>
 
-    <!-- Etapa 2: Escolha entre telefone ou WhatsApp -->
     <div v-if="startStep === 2" class="card p-4 w-100 mt-3" style="max-width: 600px;">
       <h4 class="mb-3">Você quer usar telefone ou WhatsApp?</h4>
       <div class="d-flex justify-content-around">
@@ -22,7 +20,6 @@
       </div>
     </div>
 
-    <!-- Formulário -->
     <form v-if="startStep === 3" @submit.prevent="handleSubmit" class="p-4 border rounded bg-white shadow-sm w-100 mt-3" style="max-width: 600px;">
       <h2 class="mb-4 text-center text-primary">Cadastro de Chamado</h2>
 
@@ -40,12 +37,14 @@
 
       <div v-if="selectedContact === 'telefone'" class="form-group mb-3">
         <label for="telefone" class="form-label">Telefone da Empresa</label>
-        <input type="tel" class="form-control" id="telefone" v-model="ticket.telefone" @input="onTelefoneInput" maxlength="14" placeholder="(00)0000-0000" required />
+        <input type="tel" class="form-control" id="telefone" v-model="ticket.telefone" @input="onTelefoneInput" maxlength="15" placeholder="(00)00000-0000" required />
+        <small v-if="ticket.telefone && ticket.telefone.length < 14" class="text-danger">Telefone inválido. Deve estar no formato (00)00000-0000</small>
       </div>
 
       <div v-if="selectedContact === 'whatsapp'" class="form-group mb-3">
         <label for="whatsapp" class="form-label">WhatsApp</label>
         <input type="tel" class="form-control" id="whatsapp" v-model="ticket.whatsapp" @input="onWhatsappInput" maxlength="15" placeholder="(00)00000-0000" required />
+        <small v-if="ticket.whatsapp && ticket.whatsapp.length < 14" class="text-danger">WhatsApp inválido. Deve estar no formato (00)00000-0000</small>
       </div>
 
       <div class="form-group mb-3">
@@ -69,9 +68,9 @@
         <textarea class="form-control" id="descricaoServico" v-model="ticket.descricaoServico" @input="validateForm" rows="3" required></textarea>
       </div>
 
-      <button type="submit" class="btn btn-primary btn-lg w-100 custom-btn hover-green" :disabled="!isFormValid">
+      <button type="submit" class="btn btn-primary btn-lg w-100 custom-btn hover-green" :disabled="!formValidation()">
         Enviar Chamado
-      </button>>
+      </button>
     </form>
   </div>
 </template>
@@ -80,6 +79,7 @@
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
+  name: 'IncidentTicketForm',
   setup() {
     const startStep = ref(0);
     const selectedCpfCnpj = ref('');
@@ -99,7 +99,6 @@ export default defineComponent({
     const isCpfValid = ref(true);
     const isCnpjValid = ref(true);
     const isEmailValid = ref(true);
-    const isFormValid = ref(false);
 
     const selectCpfCnpj = (tipo: string) => {
       selectedCpfCnpj.value = tipo;
@@ -115,40 +114,38 @@ export default defineComponent({
       ticket.value.cpf = ticket.value.cpf.replace(/\D/g, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4').slice(0, 14);
       const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
       isCpfValid.value = cpfRegex.test(ticket.value.cpf);
-      validateForm();
     };
 
     const onCnpjInput = () => {
       ticket.value.cnpj = ticket.value.cnpj.replace(/\D/g, '').replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5').slice(0, 18);
       const cnpjRegex = /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/;
       isCnpjValid.value = cnpjRegex.test(ticket.value.cnpj);
-      validateForm();
     };
 
     const onTelefoneInput = () => {
-      ticket.value.telefone = ticket.value.telefone.replace(/\D/g, '').replace(/(\d{2})(\d{4})(\d{4})/, '($1)$2-$3').slice(0, 13);
-      validateForm();
+      ticket.value.telefone = ticket.value.telefone.replace(/\D/g, '').replace(/(\d{2})(\d{5})(\d{4})/, '($1)$2-$3').slice(0, 14);
     };
 
     const onWhatsappInput = () => {
       ticket.value.whatsapp = ticket.value.whatsapp.replace(/\D/g, '').replace(/(\d{2})(\d{5})(\d{4})/, '($1)$2-$3').slice(0, 14);
-      validateForm();
     };
 
     const validateForm = () => {
       isEmailValid.value = ticket.value.emailEmpresa === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ticket.value.emailEmpresa);
+    };
 
-      isFormValid.value =
-        ((selectedCpfCnpj.value === 'cpf' ? ticket.value.cpf.length > 0 : ticket.value.cnpj.length > 0)) &&
-        ((selectedContact.value === 'telefone' ? ticket.value.telefone.length > 0 : ticket.value.whatsapp.length > 0)) &&
-        ticket.value.cliente.trim() !== '' &&
-        ticket.value.empresa.trim() !== '' &&
-        ticket.value.descricaoServico.trim() !== '' &&
-        isEmailValid.value;
+    const formValidation = () => {
+      const cpfValid = selectedCpfCnpj.value !== 'cpf' || isCpfValid.value;
+      const cnpjValid = selectedCpfCnpj.value !== 'cnpj' || isCnpjValid.value;
+      const phoneValid = selectedContact.value !== 'telefone' || (ticket.value.telefone && ticket.value.telefone.length >= 14);
+      const whatsappValid = selectedContact.value !== 'whatsapp' || (ticket.value.whatsapp && ticket.value.whatsapp.length >= 14);
+      const requiredFields = ticket.value.cliente && ticket.value.empresa && ticket.value.descricaoServico;
+      const emailOk = !ticket.value.emailEmpresa || isEmailValid.value;
+      return cpfValid && cnpjValid && phoneValid && whatsappValid && requiredFields && emailOk;
     };
 
     const handleSubmit = async () => {
-      if (!isFormValid.value) return;
+      if (!formValidation()) return;
 
       try {
         const response = await fetch('https://ticketsupport-97c66f2a0810.herokuapp.com/send-ticket', {
@@ -183,18 +180,19 @@ export default defineComponent({
       isCpfValid,
       isCnpjValid,
       isEmailValid,
-      isFormValid,
       selectCpfCnpj,
       selectContact,
+      formValidation
     };
-  },
+  }
 });
 </script>
 
 <style scoped>
+.custom-btn:hover,
 .hover-green:hover {
-  background-color: #28a745 !important;
-  border-color: #28a745 !important;
+  background-color: #22c55e !important;
+  border-color: #22c55e !important;
   color: #fff !important;
 }
 </style>

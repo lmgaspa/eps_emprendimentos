@@ -8,7 +8,11 @@ dotenv.config();
 const app: Application = express();
 
 // Middlewares
-app.use(cors());
+app.use(cors({
+  origin: 'https://eps-emprendimentos.vercel.app',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type'],
+}));
 app.use(express.json());
 
 // Rotas da API
