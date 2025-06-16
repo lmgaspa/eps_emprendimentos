@@ -148,7 +148,7 @@ export default defineComponent({
       if (!formValidation()) return;
 
       try {
-        const response = await fetch('https://ticketsupport-97c66f2a0810.herokuapp.com/send-ticket', {
+        const response = await fetch('https://eps-emprendimentos.onrender.com/tickets/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(ticket.value),

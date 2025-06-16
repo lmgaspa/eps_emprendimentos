@@ -1,9 +1,6 @@
 <template>
-  <div>
-    <IncidentTicketForm />
-  </div>
+  <router-view />
 </template>
 
 <script setup lang="ts">
-import IncidentTicketForm from './components/IncidentTicketForm.vue'
 </script>
