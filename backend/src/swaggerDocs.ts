@@ -9,7 +9,8 @@ export const swaggerDocs = {
     description: 'API para registro e acompanhamento de chamados',
   },
   servers: [
-    { url: 'http://localhost:3000' },
+    { url: 'https://eps-emprendimentos.onrender.com' },
+    { url: 'http://localhost:3000' }
   ],
   components: {
     securitySchemes: {
@@ -59,6 +60,7 @@ export const swaggerDocs = {
       post: {
         tags: ['Tickets'],
         summary: 'Cria um novo ticket',
+        security: [{ bearerAuth: [] }],
         requestBody: {
           required: true,
           content: {
@@ -83,6 +85,7 @@ export const swaggerDocs = {
       get: {
         tags: ['Tickets'],
         summary: 'Busca tickets por cliente',
+        security: [{ bearerAuth: [] }],
         parameters: [
           {
             name: 'cliente',
@@ -98,6 +101,7 @@ export const swaggerDocs = {
       get: {
         tags: ['Tickets'],
         summary: 'Busca ticket pela nota de serviço',
+        security: [{ bearerAuth: [] }],
         parameters: [
           {
             name: 'notaServico',
@@ -113,6 +117,7 @@ export const swaggerDocs = {
       get: {
         tags: ['Tickets'],
         summary: 'Lista todos os tickets (admin)',
+        security: [{ bearerAuth: [] }],
         responses: { 200: { description: 'Todos os tickets' } }
       }
     },
@@ -120,6 +125,7 @@ export const swaggerDocs = {
       get: {
         tags: ['Tickets'],
         summary: 'Busca ticket por ID',
+        security: [{ bearerAuth: [] }],
         parameters: [
           {
             name: 'id',
@@ -134,7 +140,7 @@ export const swaggerDocs = {
     '/auth/login': {
       post: {
         tags: ['Autenticação'],
-        summary: 'Login de funcionário',
+        summary: 'Login de funcionário ou admin',
         requestBody: {
           required: true,
           content: {
@@ -170,17 +176,23 @@ export const swaggerDocs = {
       post: {
         tags: ['Autenticação'],
         summary: 'Registra um novo funcionário (somente admin)',
+        security: [{ bearerAuth: [] }],
         requestBody: {
           required: true,
           content: {
             'application/json': {
               schema: {
                 type: 'object',
+                required: ['name', 'email', 'password', 'role'],
                 properties: {
-                  nome: { type: 'string', example: 'Novo Funcionário' },
+                  name: { type: 'string', example: 'Novo Funcionário' },
                   email: { type: 'string', example: 'novo@eps.com' },
                   password: { type: 'string', example: '123456' },
-                  role: { type: 'string', enum: ['admin', 'user'], example: 'user' }
+                  role: {
+                    type: 'string',
+                    enum: ['admin', 'employee'],
+                    example: 'employee'
+                  }
                 }
               }
             }
@@ -188,7 +200,7 @@ export const swaggerDocs = {
         },
         responses: {
           201: { description: 'Funcionário registrado com sucesso' },
-          403: { description: 'Acesso negado' }
+          403: { description: 'Acesso negado (apenas admin)' }
         }
       }
     }
