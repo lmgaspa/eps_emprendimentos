@@ -4,10 +4,9 @@
 
     <div class="content position-relative z-1">
       <h1 class="display-4 fw-bold mb-3">EPS Empreendimentos</h1>
-      <p class="lead mb-4">Sistema moderno de chamados técnicos. Acesse sua conta ou crie uma nova para começar.</p>
-      <div class="d-flex justify-content-center gap-3">
+      <p class="lead mb-4">Sistema moderno de chamados técnicos. Faça login para acessar sua conta.</p>
+      <div class="d-flex justify-content-center">
         <button @click="goToLogin" class="btn btn-success px-4 py-2 fw-semibold rounded-pill">Login</button>
-        <button @click="goToRegister" class="btn btn-success px-4 py-2 fw-semibold rounded-pill">Cadastrar</button>
       </div>
     </div>
   </div>
@@ -20,10 +19,6 @@ const router = useRouter()
 
 const goToLogin = () => {
   router.push('/login')
-}
-
-const goToRegister = () => {
-  router.push('/register')
 }
 </script>
 
@@ -74,10 +69,5 @@ p.lead {
     padding: 0.5rem 1.2rem;
     font-size: 0.9rem;
   }
-
-  .d-flex.gap-3 {
-    flex-direction: column;
-    gap: 1rem !important;
-  }
 }
-</style scoped>
+</style>

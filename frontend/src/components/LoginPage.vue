@@ -28,14 +28,28 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import router from '../router'
 
 const email = ref('')
 const password = ref('')
 
-const handleLogin = () => {
-  console.log('Email:', email.value)
-  console.log('Senha:', password.value)
+const handleLogin = async () => {
+  const response = await fetch('http://localhost:3000/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email.value, password: password.value })
+  })
+
+  if (!response.ok) {
+    alert('Login inválido')
+    return
+  }
+
+  const data = await response.json()
+  localStorage.setItem('token', data.token)
+  router.push('/dashboard') // ✅ redireciona após login
 }
+
 </script>
 
 <style scoped>
