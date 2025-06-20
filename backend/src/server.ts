@@ -1,8 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { connectDB } from './database';
-import authRoutes from './routes/auth.routes';
-import ticketRoutes from './routes/ticket.routes';
+import routes from './routes';
 import setupSwagger from './swagger';
 
 const app = express();
@@ -19,8 +18,7 @@ app.use((req, res, next) => {
 
 connectDB();
 
-app.use('/auth', authRoutes);
-app.use('/tickets', ticketRoutes);
+app.use('/api', routes);
 setupSwagger(app);
 
 const PORT = process.env.PORT || 10000;
