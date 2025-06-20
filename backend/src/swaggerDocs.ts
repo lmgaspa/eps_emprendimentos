@@ -6,7 +6,7 @@ export const swaggerDocs = {
   info: {
     title: 'API de Chamados EPS',
     version: '1.0.0',
-    description: 'API para registro e acompanhamento de chamados',
+    description: 'API para registro e acompanhamento de chamados', 
   },
   servers: [
     { url: 'https://eps-emprendimentos.onrender.com' },

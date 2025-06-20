@@ -3,14 +3,24 @@
     <div class="gradient-overlay"></div>
 
     <div class="content position-relative z-1 text-center">
-      <h1 class="display-4 fw-bold mb-3">Bem-vindo ao Painel</h1>
+      <h1 class="display-4 fw-bold mb-3">Bem-vindo, {{ userName }}</h1>
       <p class="lead mb-4">Gerencie seus chamados técnicos com facilidade.</p>
 
-      <div class="d-flex gap-3 justify-content-center">
+      <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
         <button @click="goToChamados" class="btn btn-success fw-semibold px-4 rounded-pill">
           Ver Chamados
         </button>
-        <button @click="logout" class="btn btn-outline-light fw-semibold px-4 rounded-pill">
+        <button @click="goToNovaNota" class="btn btn-warning fw-semibold px-4 rounded-pill">
+          Registrar Nota de Serviço
+        </button>
+        <button
+          v-if="isAdmin"
+          @click="goToRegistrarFuncionario"
+          class="btn btn-outline-light fw-semibold px-4 rounded-pill"
+        >
+          Registrar Funcionário
+        </button>
+        <button @click="logout" class="btn btn-danger fw-semibold px-4 rounded-pill">
           Sair
         </button>
       </div>
@@ -19,14 +29,36 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const userName = ref('')
+const isAdmin = ref(false)
 
-const goToChamados = () => {
-  router.push('/tickets') // ajuste conforme sua rota real de chamados
-}
+onMounted(async () => {
+  const token = localStorage.getItem('token')
+  if (!token) return router.push('/login')
 
+  try {
+    const response = await fetch('https://eps-emprendimentos.onrender.com/api/auth/profile', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+
+    if (!response.ok) throw new Error('Erro')
+
+    const user = await response.json()
+    userName.value = user.name
+    isAdmin.value = user.role === 'admin'
+  } catch (e) {
+    localStorage.removeItem('token')
+    router.push('/login')
+  }
+})
+
+const goToChamados = () => router.push('/tickets')
+const goToNovaNota = () => router.push('/registrar-ticket')
+const goToRegistrarFuncionario = () => router.push('/register')
 const logout = () => {
   localStorage.removeItem('token')
   router.push('/login')

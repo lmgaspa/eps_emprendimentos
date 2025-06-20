@@ -34,7 +34,7 @@ const email = ref('')
 const password = ref('')
 
 const handleLogin = async () => {
-  const response = await fetch('http://localhost:3000/auth/login', {
+  const response = await fetch('https://eps-emprendimentos.onrender.com/api/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: email.value, password: password.value })
@@ -47,7 +47,7 @@ const handleLogin = async () => {
 
   const data = await response.json()
   localStorage.setItem('token', data.token)
-  router.push('/dashboard') // ✅ redireciona após login
+  router.push('/dashboard')
 }
 
 </script>
