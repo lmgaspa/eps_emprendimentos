@@ -40,10 +40,20 @@ const name = ref('')
 const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
-const role = ref('user') // padrão
+const role = ref('employee') // ou 'user' se for mais adequado
 const router = useRouter()
 
 const handleRegister = async () => {
+  if (!name.value || !email.value || !password.value || !confirmPassword.value) {
+    alert('Preencha todos os campos.')
+    return
+  }
+
+  if (password.value.length < 6) {
+    alert('A senha deve ter no mínimo 6 caracteres.')
+    return
+  }
+
   if (password.value !== confirmPassword.value) {
     alert('As senhas não coincidem.')
     return
@@ -70,7 +80,7 @@ const handleRegister = async () => {
         Authorization: `Bearer ${token}`
       },
       body: JSON.stringify({
-        nome: name.value,
+        name: name.value,
         email: email.value,
         password: password.value,
         role: role.value

@@ -203,6 +203,55 @@ export const swaggerDocs = {
           403: { description: 'Acesso negado (apenas admin)' }
         }
       }
+    },
+    '/auth/forgot-password': {
+      post: {
+        tags: ['Autenticação'],
+        summary: 'Solicita link de recuperação de senha',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['email'],
+                properties: {
+                  email: { type: 'string', example: 'usuario@eps.com' }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: { description: 'Link de redefinição enviado com sucesso' },
+          404: { description: 'E-mail não encontrado' }
+        }
+      }
+    },
+    '/auth/reset-password': {
+      post: {
+        tags: ['Autenticação'],
+        summary: 'Redefine a senha com token',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['token', 'newPassword'],
+                properties: {
+                  token: { type: 'string', example: 'jwt-token-recebido-por-email' },
+                  newPassword: { type: 'string', example: 'novaSenha123' }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: { description: 'Senha redefinida com sucesso' },
+          400: { description: 'Token inválido ou expirado' }
+        }
+      }
     }
   }
 };

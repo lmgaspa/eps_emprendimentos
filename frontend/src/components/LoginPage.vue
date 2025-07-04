@@ -15,7 +15,7 @@
         </div>
 
         <div class="text-end mb-3">
-          <a href="#" class="text-light small">Esqueceu sua senha?</a>
+          <RouterLink to="/esqueci-senha" class="text-light small">Esqueceu sua senha?</RouterLink>
         </div>
 
         <button type="submit" class="btn btn-success w-100 fw-semibold rounded-pill">

@@ -1,22 +1,23 @@
 <template>
-  <div class="d-flex flex-column align-items-center bg-gradient-custom full-height">
+  <div class="d-flex flex-column align-items-center full-height">
+    <div class="gradient-overlay"></div>
     <div v-if="startStep === 0" class="my-5">
-      <button class="btn btn-success btn-lg" @click="startStep = 1">Iniciar Cadastro</button>
+      <button class="btn btn-warning btn-lg" @click="startStep = 1">Iniciar Cadastro</button>
     </div>
 
     <div v-if="startStep === 1" class="card p-4 mt-4 w-100" style="max-width: 600px;">
       <h4 class="mb-3">Você quer usar CPF ou CNPJ?</h4>
       <div class="d-flex justify-content-around">
-        <button class="btn btn-outline-primary" @click="selectCpfCnpj('cpf')">CPF</button>
-        <button class="btn btn-outline-primary" @click="selectCpfCnpj('cnpj')">CNPJ</button>
+        <button class="btn btn-warning" @click="selectCpfCnpj('cpf')">CPF</button>
+        <button class="btn btn-warning" @click="selectCpfCnpj('cnpj')">CNPJ</button>
       </div>
     </div>
 
     <div v-if="startStep === 2" class="card p-4 w-100 mt-3" style="max-width: 600px;">
       <h4 class="mb-3">Você quer usar telefone ou WhatsApp?</h4>
       <div class="d-flex justify-content-around">
-        <button class="btn btn-outline-success" @click="selectContact('telefone')">Telefone</button>
-        <button class="btn btn-outline-success" @click="selectContact('whatsapp')">WhatsApp</button>
+        <button class="btn btn-warning" @click="selectContact('telefone')">Telefone</button>
+        <button class="btn btn-warning" @click="selectContact('whatsapp')">WhatsApp</button>
       </div>
     </div>
 
@@ -79,7 +80,7 @@
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
-  name: 'IncidentTicketForm',
+  name: 'RegistrarTicketForm',
   setup() {
     const startStep = ref(0);
     const selectedCpfCnpj = ref('');
@@ -189,10 +190,26 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.custom-btn:hover,
-.hover-green:hover {
-  background-color: #22c55e !important;
-  border-color: #22c55e !important;
-  color: #fff !important;
+
+.full-height {
+  position: relative;
+  min-height: 100vh;
+  background-color: #0f0f1b;
+  overflow: hidden;
+  width: 100%;
 }
+
+.gradient-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at top center, #00dc82 0%, #0f0f1b 60%, #000 100%);
+  opacity: 0.3;
+  filter: blur(120px);
+  z-index: -1;
+  pointer-events: none;
+}
+
 </style>

@@ -14,9 +14,14 @@ mongoose.connect(process.env.MONGO_URI as string)
 
 
 app.use(cors({
-  origin: 'https://eps-emprendimentos.vercel.app',
+  origin: [
+    'http://localhost:5173',           // Vite
+    'http://localhost:8080',           // Vue CLI
+    'https://eps-emprendimentos.vercel.app' // Produção
+  ],
   methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 app.use(express.json());
 

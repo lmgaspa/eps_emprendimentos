@@ -10,13 +10,16 @@
         <button @click="goToChamados" class="btn btn-success fw-semibold px-4 rounded-pill">
           Ver Chamados
         </button>
+        <button @click="goToBuscarNota" class="btn btn-info fw-semibold px-4 rounded-pill">
+          Buscar Nota de Serviço
+        </button>
         <button @click="goToNovaNota" class="btn btn-warning fw-semibold px-4 rounded-pill">
           Registrar Nota de Serviço
         </button>
         <button
           v-if="isAdmin"
           @click="goToRegistrarFuncionario"
-          class="btn btn-outline-light fw-semibold px-4 rounded-pill"
+          class="btn btn-blue fw-semibold px-4 rounded-pill"
         >
           Registrar Funcionário
         </button>
@@ -57,6 +60,7 @@ onMounted(async () => {
 })
 
 const goToChamados = () => router.push('/tickets')
+const goToBuscarNota = () => router.push('/search-ticket')
 const goToNovaNota = () => router.push('/registrar-ticket')
 const goToRegistrarFuncionario = () => router.push('/register')
 const logout = () => {
@@ -70,6 +74,17 @@ const logout = () => {
   position: relative;
   background-color: #0f0f1b;
   overflow: hidden;
+}
+
+.btn-blue {
+  background-color: #0d6efd;
+  color: #fff;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.btn-blue:hover {
+  background-color: #0b5ed7;
 }
 
 .gradient-overlay {
