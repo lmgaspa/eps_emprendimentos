@@ -146,27 +146,36 @@ export default defineComponent({
     };
 
     const handleSubmit = async () => {
-      if (!formValidation()) return;
+  if (!formValidation()) return;
 
-      try {
-        const response = await fetch('https://eps-emprendimentos.onrender.com/tickets/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(ticket.value),
-        });
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('Você precisa estar logado para abrir um chamado.');
+    return;
+  }
 
-        if (response.ok) {
-          alert('Chamado enviado com sucesso!');
-          startStep.value = 0;
-        } else {
-          alert('Erro ao enviar chamado.');
-        }
-      } catch (error) {
-        console.error('Erro ao enviar:', error);
-        alert('Erro ao enviar chamado.');
-      }
-    };
+  try {
+    const response = await fetch('https://eps-emprendimentos.onrender.com/api/tickets/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(ticket.value),
+    });
 
+    if (response.ok) {
+      alert('Chamado enviado com sucesso!');
+      startStep.value = 0;
+    } else {
+      const error = await response.json();
+      alert(error.message || 'Erro ao enviar chamado.');
+    }
+  } catch (error) {
+    console.error('Erro ao enviar:', error);
+    alert('Erro ao enviar chamado.');
+  }
+};
     return {
       startStep,
       selectedCpfCnpj,

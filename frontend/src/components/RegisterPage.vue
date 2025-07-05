@@ -16,12 +16,36 @@
 
         <div class="mb-3">
           <label for="password" class="form-label text-white">Senha</label>
-          <input v-model="password" type="password" id="password" class="form-control" placeholder="Crie uma senha" required />
+          <div class="input-group">
+            <input
+              :type="showPassword ? 'text' : 'password'"
+              v-model="password"
+              id="password"
+              class="form-control"
+              placeholder="Crie uma senha"
+              required
+            />
+            <button class="btn btn-outline-light" type="button" @click="showPassword = !showPassword">
+              <i :class="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+            </button>
+          </div>
         </div>
 
         <div class="mb-3">
           <label for="confirmPassword" class="form-label text-white">Confirmar Senha</label>
-          <input v-model="confirmPassword" type="password" id="confirmPassword" class="form-control" placeholder="Repita sua senha" required />
+          <div class="input-group">
+            <input
+              :type="showConfirm ? 'text' : 'password'"
+              v-model="confirmPassword"
+              id="confirmPassword"
+              class="form-control"
+              placeholder="Repita sua senha"
+              required
+            />
+            <button class="btn btn-outline-light" type="button" @click="showConfirm = !showConfirm">
+              <i :class="showConfirm ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+            </button>
+          </div>
         </div>
 
         <button type="submit" class="btn btn-success w-100 fw-semibold rounded-pill">
@@ -40,7 +64,9 @@ const name = ref('')
 const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
-const role = ref('employee') // ou 'user' se for mais adequado
+const role = ref('employee')
+const showPassword = ref(false)
+const showConfirm = ref(false)
 const router = useRouter()
 
 const handleRegister = async () => {
@@ -73,7 +99,7 @@ const handleRegister = async () => {
       return
     }
 
-    const response = await fetch('http://localhost:3000/auth/register', {
+    const response = await fetch('https://eps-emprendimentos.onrender.com/api/auth/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

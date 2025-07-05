@@ -6,12 +6,31 @@
       <form @submit.prevent="handleLogin">
         <div class="mb-3">
           <label for="email" class="form-label text-white">E-mail</label>
-          <input v-model="email" type="email" id="email" class="form-control" placeholder="seuemail@exemplo.com" required />
+          <input
+            v-model="email"
+            type="email"
+            id="email"
+            class="form-control"
+            placeholder="seuemail@exemplo.com"
+            required
+          />
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3 position-relative">
           <label for="password" class="form-label text-white">Senha</label>
-          <input v-model="password" type="password" id="password" class="form-control" placeholder="Digite sua senha" required />
+          <input
+            v-model="password"
+            :type="showPassword ? 'text' : 'password'"
+            id="password"
+            class="form-control"
+            placeholder="Digite sua senha"
+            required
+          />
+          <i
+            :class="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"
+            class="toggle-password-icon"
+            @click="showPassword = !showPassword"
+          ></i>
         </div>
 
         <div class="text-end mb-3">
@@ -32,6 +51,7 @@ import router from '../router'
 
 const email = ref('')
 const password = ref('')
+const showPassword = ref(false)
 
 const handleLogin = async () => {
   const response = await fetch('https://eps-emprendimentos.onrender.com/api/auth/login', {
@@ -49,7 +69,6 @@ const handleLogin = async () => {
   localStorage.setItem('token', data.token)
   router.push('/dashboard')
 }
-
 </script>
 
 <style scoped>
@@ -61,5 +80,13 @@ const handleLogin = async () => {
   background-color: #1a1a2e;
   border: none;
   border-radius: 1rem;
+}
+.toggle-password-icon {
+  position: absolute;
+  top: 38px;
+  right: 12px;
+  cursor: pointer;
+  color: #ccc;
+  font-size: 1.2rem;
 }
 </style>
