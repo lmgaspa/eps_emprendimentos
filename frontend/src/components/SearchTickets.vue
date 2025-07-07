@@ -17,6 +17,8 @@
         <label class="form-label text-white">Buscar por:</label>
         <select v-model="searchType" class="form-select">
           <option disabled value="">Selecione</option>
+          <option value="cliente">Nome do Cliente</option>
+          <option value="id">ID do Ticket</option>
           <option value="cpf">CPF</option>
           <option value="cnpj">CNPJ</option>
           <option value="whatsapp">WhatsApp</option>
@@ -29,13 +31,8 @@
 
       <div class="form-group mb-3" v-if="searchType !== '' && searchType !== 'all'">
         <label class="form-label text-white">{{ labelForType }}</label>
-        <input
-          v-model="searchValue"
-          class="form-control"
-          :type="searchType === 'email' ? 'email' : 'text'"
-          :placeholder="labelForType"
-          required
-        />
+        <input v-model="searchValue" class="form-control" :type="searchType === 'email' ? 'email' : 'text'"
+          :placeholder="labelForType" required />
       </div>
 
       <button class="btn btn-warning w-100" @click="searchTicket">Buscar</button>
@@ -47,11 +44,7 @@
     <div v-if="paginatedTickets.length > 0" class="card p-4 w-100 mt-4" style="max-width: 600px;">
       <h4 class="text-white mb-3">Resultado</h4>
 
-      <div
-        v-for="ticket in paginatedTickets"
-        :key="ticket.notaServico"
-        class="mb-4 p-3 bg-dark text-white rounded"
-      >
+      <div v-for="ticket in paginatedTickets" :key="ticket.notaServico" class="mb-4 p-3 bg-dark text-white rounded">
         <p><strong>Nota de Serviço:</strong> {{ ticket.notaServico }}</p>
         <p><strong>Cliente:</strong> {{ ticket.cliente }}</p>
         <p><strong>Empresa:</strong> {{ ticket.empresa }}</p>
@@ -71,13 +64,19 @@
       </div>
     </div>
 
-    <!-- Formulário de edição -->
+
     <div v-if="editingTicket" class="card p-4 w-100 mt-4" style="max-width: 600px;">
       <h4 class="text-white mb-3">Atualizar Ticket</h4>
       <p class="text-secondary mb-2"><strong>Nota de Serviço (imutável):</strong> {{ editingTicket.notaServico }}</p>
       <input v-model="editingTicket.cliente" class="form-control mb-2" placeholder="Cliente" />
       <input v-model="editingTicket.empresa" class="form-control mb-2" placeholder="Empresa" />
-      <textarea v-model="editingTicket.descricaoServico" class="form-control mb-3" rows="3" placeholder="Descrição do serviço"></textarea>
+      <input v-model="editingTicket.cpf" class="form-control mb-2" placeholder="CPF" />
+      <input v-model="editingTicket.cnpj" class="form-control mb-2" placeholder="CNPJ" />
+      <input v-model="editingTicket.whatsapp" class="form-control mb-2" placeholder="WhatsApp" />
+      <input v-model="editingTicket.telefone" class="form-control mb-2" placeholder="Telefone" />
+      <input v-model="editingTicket.emailEmpresa" class="form-control mb-2" placeholder="E-mail" />
+      <textarea v-model="editingTicket.descricaoServico" class="form-control mb-3" rows="3"
+        placeholder="Descrição do serviço"></textarea>
 
       <button class="btn btn-success w-100" @click="updateTicket">Salvar Alterações</button>
     </div>
@@ -162,6 +161,8 @@ const totalPages = computed(() => Math.ceil(tickets.value.length / perPage))
 
 const labelForType = computed(() => {
   switch (searchType.value) {
+    case 'cliente': return 'Nome do Cliente'
+    case 'id': return 'ID do Ticket'
     case 'cpf': return 'CPF'
     case 'cnpj': return 'CNPJ'
     case 'whatsapp': return 'WhatsApp'
@@ -198,6 +199,8 @@ const searchTicket = async () => {
   } else {
     const encoded = encodeURIComponent(searchValue.value)
     switch (searchType.value) {
+      case 'cliente': url = `https://eps-emprendimentos.onrender.com/api/tickets/cliente/${encoded}`; break
+      case 'id': url = `https://eps-emprendimentos.onrender.com/api/tickets/${encoded}`; break
       case 'cpf': url = `https://eps-emprendimentos.onrender.com/api/tickets/cpf/${encoded}`; break
       case 'cnpj': url = `https://eps-emprendimentos.onrender.com/api/tickets/cnpj/${encoded}`; break
       case 'whatsapp': url = `https://eps-emprendimentos.onrender.com/api/tickets/whatsapp/${encoded}`; break
@@ -279,6 +282,7 @@ const updateTicket = async () => {
   overflow: hidden;
   width: 100%;
 }
+
 .gradient-overlay {
   position: absolute;
   top: 0;
@@ -291,6 +295,7 @@ const updateTicket = async () => {
   z-index: -1;
   pointer-events: none;
 }
+
 .card {
   background-color: #1a1a2e;
   border: none;

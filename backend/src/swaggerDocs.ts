@@ -55,6 +55,20 @@ export const swaggerDocs = {
           },
         ],
       },
+      Ticket: {
+        type: "object",
+        properties: {
+          notaServico: { type: "string" },
+          cliente: { type: "string" },
+          empresa: { type: "string" },
+          cpf: { type: "string" },
+          cnpj: { type: "string" },
+          emailEmpresa: { type: "string" },
+          telefone: { type: "string" },
+          whatsapp: { type: "string" },
+          descricaoServico: { type: "string" },
+        },
+      },
     },
   },
   security: [{ bearerAuth: [] }],
@@ -99,12 +113,34 @@ export const swaggerDocs = {
             in: "path",
             required: true,
             schema: { type: "string" },
-            example: "123.456.789-00",
           },
         ],
         responses: {
           200: { description: "Tickets encontrados" },
           404: { description: "CPF não encontrado no registro." },
+        },
+      },
+      patch: {
+        tags: ["Tickets"],
+        summary: "Atualizar ticket por CPF",
+        parameters: [
+          {
+            name: "cpf",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/Ticket" },
+            },
+          },
+        },
+        responses: {
+          200: { description: "Ticket atualizado com sucesso" },
         },
       },
     },
@@ -119,12 +155,34 @@ export const swaggerDocs = {
             in: "path",
             required: true,
             schema: { type: "string" },
-            example: "12.345.678/0001-99",
           },
         ],
         responses: {
           200: { description: "Tickets encontrados" },
           404: { description: "CNPJ não encontrado no registro." },
+        },
+      },
+      patch: {
+        tags: ["Tickets"],
+        summary: "Atualizar ticket por CNPJ",
+        parameters: [
+          {
+            name: "cnpj",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/Ticket" },
+            },
+          },
+        },
+        responses: {
+          200: { description: "Ticket atualizado com sucesso" },
         },
       },
     },
@@ -139,12 +197,34 @@ export const swaggerDocs = {
             in: "path",
             required: true,
             schema: { type: "string" },
-            example: "(73)99410-5740",
           },
         ],
         responses: {
           200: { description: "Tickets encontrados" },
           404: { description: "WhatsApp não encontrado no registro." },
+        },
+      },
+      patch: {
+        tags: ["Tickets"],
+        summary: "Atualizar ticket por WhatsApp",
+        parameters: [
+          {
+            name: "whatsapp",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/Ticket" },
+            },
+          },
+        },
+        responses: {
+          200: { description: "Ticket atualizado com sucesso" },
         },
       },
     },
@@ -159,12 +239,34 @@ export const swaggerDocs = {
             in: "path",
             required: true,
             schema: { type: "string" },
-            example: "(71)3212-1229",
           },
         ],
         responses: {
           200: { description: "Tickets encontrados" },
           404: { description: "Telefone não encontrado no registro." },
+        },
+      },
+      patch: {
+        tags: ["Tickets"],
+        summary: "Atualizar ticket por Telefone",
+        parameters: [
+          {
+            name: "telefone",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/Ticket" },
+            },
+          },
+        },
+        responses: {
+          200: { description: "Ticket atualizado com sucesso" },
         },
       },
     },
@@ -179,7 +281,6 @@ export const swaggerDocs = {
             in: "path",
             required: true,
             schema: { type: "string" },
-            example: "cliente@empresa.com",
             description: "E-mail do cliente que registrou o ticket",
           },
         ],
@@ -195,12 +296,31 @@ export const swaggerDocs = {
               },
             },
           },
-          404: {
-            description: "E-mail não encontrado no registro.",
+          404: { description: "E-mail não encontrado no registro." },
+          401: { description: "Token ausente ou inválido." },
+        },
+      },
+      patch: {
+        tags: ["Tickets"],
+        summary: "Atualizar ticket por E-mail",
+        parameters: [
+          {
+            name: "email",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
           },
-          401: {
-            description: "Token ausente ou inválido.",
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/Ticket" },
+            },
           },
+        },
+        responses: {
+          200: { description: "Ticket atualizado com sucesso" },
         },
       },
     },
@@ -219,29 +339,28 @@ export const swaggerDocs = {
         ],
         responses: { 200: { description: "Ticket encontrado" } },
       },
-    },
-    "/tickets/cliente/{cliente}": {
-      get: {
+      put: {
         tags: ["Tickets"],
-        summary: "Busca tickets por cliente",
-        security: [{ bearerAuth: [] }],
+        summary: "Atualizar ticket por Nota de Serviço",
         parameters: [
           {
-            name: "cliente",
+            name: "notaServico",
             in: "path",
             required: true,
             schema: { type: "string" },
           },
         ],
-        responses: { 200: { description: "Lista de tickets" } },
-      },
-    },
-    "/tickets/all": {
-      get: {
-        tags: ["Tickets"],
-        summary: "Lista todos os tickets (admin)",
-        security: [{ bearerAuth: [] }],
-        responses: { 200: { description: "Todos os tickets" } },
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/Ticket" },
+            },
+          },
+        },
+        responses: {
+          200: { description: "Ticket atualizado com sucesso" },
+        },
       },
     },
     "/tickets/{id}": {
@@ -258,6 +377,78 @@ export const swaggerDocs = {
           },
         ],
         responses: { 200: { description: "Ticket encontrado" } },
+      },
+      patch: {
+        tags: ["Tickets"],
+        summary: "Atualizar ticket por ID",
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/Ticket" },
+            },
+          },
+        },
+        responses: {
+          200: { description: "Ticket atualizado com sucesso" },
+        },
+      },
+    },
+    "/tickets/cliente/{cliente}": {
+      get: {
+        tags: ["Tickets"],
+        summary: "Busca tickets por cliente",
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "cliente",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        responses: { 200: { description: "Lista de tickets" } },
+      },
+      patch: {
+        tags: ["Tickets"],
+        summary: "Atualizar ticket por nome do cliente",
+        parameters: [
+          {
+            name: "cliente",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/Ticket" },
+            },
+          },
+        },
+        responses: {
+          200: { description: "Ticket atualizado com sucesso" },
+        },
+      },
+    },
+    "/tickets/all": {
+      get: {
+        tags: ["Tickets"],
+        summary: "Lista todos os tickets",
+        security: [{ bearerAuth: [] }],
+        responses: {
+          200: { description: "Lista de tickets retornada com sucesso" },
+        },
       },
     },
     "/auth/login": {
