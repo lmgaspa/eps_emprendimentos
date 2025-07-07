@@ -172,6 +172,86 @@ export const swaggerDocs = {
         }
       }
     },
+    '/tickets/cpf/{cpf}': {
+      get: {
+        tags: ['Tickets'],
+        summary: 'Busca tickets por CPF',
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: 'cpf',
+            in: 'path',
+            required: true,
+            schema: { type: 'string' },
+            example: '123.456.789-00'
+          }
+        ],
+        responses: {
+          200: { description: 'Tickets encontrados' },
+          404: { description: 'CPF não encontrado no registro.' }
+        }
+      }
+    },
+    '/tickets/cnpj/{cnpj}': {
+      get: {
+        tags: ['Tickets'],
+        summary: 'Busca tickets por CNPJ',
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: 'cnpj',
+            in: 'path',
+            required: true,
+            schema: { type: 'string' },
+            example: '12.345.678/0001-99'
+          }
+        ],
+        responses: {
+          200: { description: 'Tickets encontrados' },
+          404: { description: 'CNPJ não encontrado no registro.' }
+        }
+      }
+    },
+    '/tickets/whatsapp/{whatsapp}': {
+      get: {
+        tags: ['Tickets'],
+        summary: 'Busca tickets por WhatsApp',
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: 'whatsapp',
+            in: 'path',
+            required: true,
+            schema: { type: 'string' },
+            example: '(73)99410-5740'
+          }
+        ],
+        responses: {
+          200: { description: 'Tickets encontrados' },
+          404: { description: 'WhatsApp não encontrado no registro.' }
+        }
+      }
+    },
+    '/tickets/telefone/{telefone}': {
+      get: {
+        tags: ['Tickets'],
+        summary: 'Busca tickets por Telefone',
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: 'telefone',
+            in: 'path',
+            required: true,
+            schema: { type: 'string' },
+            example: '(71)3212-1229'
+          }
+        ],
+        responses: {
+          200: { description: 'Tickets encontrados' },
+          404: { description: 'Telefone não encontrado no registro.' }
+        }
+      }
+    },
     '/auth/register': {
       post: {
         tags: ['Autenticação'],
