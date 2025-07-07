@@ -2,14 +2,13 @@
   <div class="full-height d-flex flex-column align-items-center p-4">
     <div class="gradient-overlay"></div>
 
-    <!-- Botão de Voltar -->
+
     <div class="w-100 mb-3" style="max-width: 600px;">
       <RouterLink to="/dashboard" class="btn btn-success w-100 fw-bold rounded-pill">
         ⬅️ Voltar ao menu anterior
       </RouterLink>
     </div>
 
-    <!-- Card de Busca -->
     <div class="card p-4 w-100" style="max-width: 600px;">
       <h2 class="mb-4 text-center text-white">Buscar Ticket</h2>
 
@@ -205,7 +204,7 @@ const searchTicket = async () => {
       case 'cnpj': url = `https://eps-emprendimentos.onrender.com/api/tickets/cnpj/${encoded}`; break
       case 'whatsapp': url = `https://eps-emprendimentos.onrender.com/api/tickets/whatsapp/${encoded}`; break
       case 'telefone': url = `https://eps-emprendimentos.onrender.com/api/tickets/telefone/${encoded}`; break
-      case 'email': url = `https://eps-emprendimentos.onrender.com/api/tickets/cliente/${encoded}`; break
+      case 'email': url = `https://eps-emprendimentos.onrender.com/api/tickets/email/${encoded}`; break
       case 'nota': url = `https://eps-emprendimentos.onrender.com/api/tickets/nota/${encoded}`; break
     }
   }

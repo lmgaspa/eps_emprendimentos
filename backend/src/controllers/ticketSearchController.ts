@@ -10,31 +10,43 @@ const formatResult = (ticket: any) => ({
 
 export const getTicketsByCpf = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { cpf } = req.params
-    const tickets = await Ticket.find({ cpf })
-    if (!tickets.length) return res.status(404).json({ message: 'CPF não encontrado no registro.' })
-    res.json(tickets.map(formatResult))
+    const cpf = req.params.cpf?.trim();
+    const tickets = await Ticket.find({ cpf });
+    if (!tickets.length) return res.status(404).json({ message: 'CPF não encontrado no registro.' });
+    res.json(tickets.map(formatResult));
   } catch (err) {
-    next(err)
+    next(err);
   }
-}
+};
 
-export const getTicketsByEmpresa = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const getTicketsByCnpj = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { empresa } = req.params;
-    const tickets = await Ticket.find({ empresa: { $regex: empresa.trim(), $options: 'i' } }).sort({ createdAt: -1 });
+    const cnpj = req.params.cnpj?.trim();
+    const tickets = await Ticket.find({ cnpj });
+    if (!tickets.length) return res.status(404).json({ message: 'CNPJ não encontrado no registro.' });
+    res.json(tickets.map(formatResult));
+  } catch (err) {
+    next(err);
+  }
+};
 
-    if (!tickets.length) {
-      res.status(404).json({ message: 'Empresa não encontrada no registro.' });
-      return;
-    }
+export const getTicketsByWhatsapp = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const whatsapp = req.params.whatsapp?.trim();
+    const tickets = await Ticket.find({ whatsapp });
+    if (!tickets.length) return res.status(404).json({ message: 'WhatsApp não encontrado no registro.' });
+    res.json(tickets.map(formatResult));
+  } catch (err) {
+    next(err);
+  }
+};
 
-    const formatted = tickets.map(ticket => ({
-      ...ticket.toObject(),
-      createdAt: format(ticket.createdAt ?? new Date(), "dd/MM/yyyy HH:mm", { locale: ptBR }),
-    }));
-
-    res.json(formatted);
+export const getTicketsByTelefone = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const telefone = req.params.telefone?.trim();
+    const tickets = await Ticket.find({ telefone });
+    if (!tickets.length) return res.status(404).json({ message: 'Telefone não encontrado no registro.' });
+    res.json(tickets.map(formatResult));
   } catch (err) {
     next(err);
   }
@@ -42,44 +54,25 @@ export const getTicketsByEmpresa = async (req: Request, res: Response, next: Nex
 
 export const getTicketsByEmail = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { email } = req.params
-    const tickets = await Ticket.find({ emailEmpresa: email })
-    if (!tickets.length) return res.status(404).json({ message: 'E-mail não encontrado no registro.' })
-    res.json(tickets.map(formatResult))
+    const email = req.params.email?.trim().toLowerCase();
+    const tickets = await Ticket.find({ emailEmpresa: email });
+    if (!tickets.length) return res.status(404).json({ message: 'E-mail não encontrado no registro.' });
+    res.json(tickets.map(formatResult));
   } catch (err) {
-    next(err)
+    next(err);
   }
-}
+};
 
-export const getTicketsByCnpj = async (req: Request, res: Response, next: NextFunction) => {
+export const getTicketsByEmpresa = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const { cnpj } = req.params
-    const tickets = await Ticket.find({ cnpj })
-    if (!tickets.length) return res.status(404).json({ message: 'CNPJ não encontrado no registro.' })
-    res.json(tickets.map(formatResult))
+    const empresa = req.params.empresa?.trim();
+    const tickets = await Ticket.find({ empresa: { $regex: empresa, $options: 'i' } }).sort({ createdAt: -1 });
+    if (!tickets.length) {
+      res.status(404).json({ message: 'Empresa não encontrada no registro.' });
+      return;
+    }
+    res.json(tickets.map(formatResult));
   } catch (err) {
-    next(err)
+    next(err);
   }
-}
-
-export const getTicketsByWhatsapp = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { whatsapp } = req.params
-    const tickets = await Ticket.find({ whatsapp })
-    if (!tickets.length) return res.status(404).json({ message: 'WhatsApp não encontrado no registro.' })
-    res.json(tickets.map(formatResult))
-  } catch (err) {
-    next(err)
-  }
-}
-
-export const getTicketsByTelefone = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { telefone } = req.params
-    const tickets = await Ticket.find({ telefone })
-    if (!tickets.length) return res.status(404).json({ message: 'Telefone não encontrado no registro.' })
-    res.json(tickets.map(formatResult))
-  } catch (err) {
-    next(err)
-  }
-}
+};
