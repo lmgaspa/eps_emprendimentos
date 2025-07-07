@@ -1,12 +1,12 @@
-import { Request, Response, NextFunction } from 'express'
-import { format } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
-import Ticket from '../models/Ticket'
+import { Request, Response, NextFunction } from 'express';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import Ticket from '../models/Ticket';
 
 const formatResult = (ticket: any) => ({
   ...ticket.toObject(),
   createdAt: format(ticket.createdAt ?? new Date(), "dd/MM/yyyy HH:mm", { locale: ptBR }),
-})
+});
 
 export const getTicketsByCpf = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -63,14 +63,13 @@ export const getTicketsByEmail = async (req: Request, res: Response, next: NextF
   }
 };
 
-export const getTicketsByEmpresa = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const getTicketsByEmpresa = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const empresa = req.params.empresa?.trim();
-    const tickets = await Ticket.find({ empresa: { $regex: empresa, $options: 'i' } }).sort({ createdAt: -1 });
-    if (!tickets.length) {
-      res.status(404).json({ message: 'Empresa não encontrada no registro.' });
-      return;
-    }
+    const tickets = await Ticket.find({
+      empresa: { $regex: empresa, $options: 'i' }
+    }).sort({ createdAt: -1 });
+    if (!tickets.length) return res.status(404).json({ message: 'Empresa não encontrada no registro.' });
     res.json(tickets.map(formatResult));
   } catch (err) {
     next(err);

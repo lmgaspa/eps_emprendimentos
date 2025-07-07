@@ -11,7 +11,8 @@ import {
   getTicketsByCnpj,
   getTicketsByWhatsapp,
   getTicketsByTelefone,
-  getTicketsByEmail
+  getTicketsByEmail,
+  getTicketsByEmpresa
 } from '../controllers/ticketSearchController'
 import { verifyToken } from '../middlewares/auth.middleware';
 import Ticket from '../models/Ticket'
@@ -21,17 +22,13 @@ const router = Router();
 // Criação de ticket (qualquer funcionário)
 router.post('/', verifyToken, createTicket);
 
-router.get('/tickets/cpf/:cpf', getTicketsByCpf)
-router.get('/tickets/cnpj/:cnpj', getTicketsByCnpj)
-router.get('/tickets/whatsapp/:whatsapp', getTicketsByWhatsapp)
-router.get('/tickets/telefone/:telefone', getTicketsByTelefone)
-// Buscar tickets por nome do cliente
-router.get('/cliente/:cliente', verifyToken, getTicketsByCliente);
-router.get('/tickets/cliente/:email', getTicketsByEmail)
-// Buscar ticket por número da nota de serviço
-router.get('/nota/:notaServico', verifyToken, getTicketByNota);
 
-// Buscar todos os tickets (somente admin)
+router.get('/tickets/cpf/:cpf', getTicketsByCpf);
+router.get('/tickets/cnpj/:cnpj', getTicketsByCnpj);
+router.get('/tickets/email/:email', getTicketsByEmail);
+router.get('/tickets/telefone/:telefone', getTicketsByTelefone);
+router.get('/tickets/whatsapp/:whatsapp', getTicketsByWhatsapp);
+router.get('/tickets/empresa/:empresa', getTicketsByEmpresa);
 router.get('/all', verifyToken, getAllTickets);
 
 // Buscar ticket por ID (deixe por último)
