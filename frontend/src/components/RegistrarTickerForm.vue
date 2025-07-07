@@ -1,10 +1,20 @@
 <template>
   <div class="d-flex flex-column align-items-center full-height">
     <div class="gradient-overlay"></div>
-    <div v-if="startStep === 0" class="my-5">
-      <button class="btn btn-warning btn-lg" @click="startStep = 1">Iniciar Cadastro</button>
+
+    <!-- Botão de voltar fixo -->
+    <div class="w-100 mt-4 px-3" style="max-width: 600px;">
+      <RouterLink to="/dashboard" class="btn btn-success w-100 fw-bold rounded-pill">
+        ⬅️ Voltar ao menu anterior
+      </RouterLink>
     </div>
 
+    <!-- Botão de início do cadastro (aparece só na etapa 0) -->
+    <div v-if="startStep === 0" class="my-5 text-center">
+      <button class="btn btn-warning btn-lg mt-3" @click="startStep = 1">Iniciar Cadastro</button>
+    </div>
+
+    <!-- Etapa 1 -->
     <div v-if="startStep === 1" class="card p-4 mt-4 w-100" style="max-width: 600px;">
       <h4 class="mb-3">Você quer usar CPF ou CNPJ?</h4>
       <div class="d-flex justify-content-around">
@@ -39,7 +49,7 @@
       <div v-if="selectedContact === 'telefone'" class="form-group mb-3">
         <label for="telefone" class="form-label">Telefone da Empresa</label>
         <input type="tel" class="form-control" id="telefone" v-model="ticket.telefone" @input="onTelefoneInput" maxlength="15" placeholder="(00)00000-0000" required />
-        <small v-if="ticket.telefone && ticket.telefone.length < 14" class="text-danger">Telefone inválido. Deve estar no formato (00)00000-0000</small>
+        <small v-if="ticket.telefone && ticket.telefone.length < 13" class="text-danger">Telefone inválido. Deve estar no formato (00)0000-0000</small>
       </div>
 
       <div v-if="selectedContact === 'whatsapp'" class="form-group mb-3">
@@ -124,8 +134,11 @@ export default defineComponent({
     };
 
     const onTelefoneInput = () => {
-      ticket.value.telefone = ticket.value.telefone.replace(/\D/g, '').replace(/(\d{2})(\d{5})(\d{4})/, '($1)$2-$3').slice(0, 14);
-    };
+  ticket.value.telefone = ticket.value.telefone
+    .replace(/\D/g, '')                            
+    .replace(/(\d{2})(\d{4})(\d{0,4})/, '($1)$2-$3') 
+    .slice(0, 13);                                   
+};
 
     const onWhatsappInput = () => {
       ticket.value.whatsapp = ticket.value.whatsapp.replace(/\D/g, '').replace(/(\d{2})(\d{5})(\d{4})/, '($1)$2-$3').slice(0, 14);
@@ -138,7 +151,7 @@ export default defineComponent({
     const formValidation = () => {
       const cpfValid = selectedCpfCnpj.value !== 'cpf' || isCpfValid.value;
       const cnpjValid = selectedCpfCnpj.value !== 'cnpj' || isCnpjValid.value;
-      const phoneValid = selectedContact.value !== 'telefone' || (ticket.value.telefone && ticket.value.telefone.length >= 14);
+      const phoneValid = selectedContact.value !== 'telefone' || (ticket.value.telefone && ticket.value.telefone.length >= 13);
       const whatsappValid = selectedContact.value !== 'whatsapp' || (ticket.value.whatsapp && ticket.value.whatsapp.length >= 14);
       const requiredFields = ticket.value.cliente && ticket.value.empresa && ticket.value.descricaoServico;
       const emailOk = !ticket.value.emailEmpresa || isEmailValid.value;

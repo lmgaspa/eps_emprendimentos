@@ -130,6 +130,37 @@ export const swaggerDocs = {
         }
       }
     },
+    "/api/tickets/empresa/{empresa}": {
+      get: {
+        tags: ["Tickets"],
+        summary: "Buscar tickets por empresa",
+        parameters: [
+          {
+            name: "empresa",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+            example: "Empresa XYZ LTDA",
+          },
+        ],
+        responses: {
+          200: {
+            description: "Lista de tickets encontrados",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: { $ref: "#/components/schemas/Ticket" },
+                },
+              },
+            },
+          },
+          404: {
+            description: "Empresa não encontrada no registro.",
+          },
+        },
+      },
+    },
     "/api/tickets/cliente/{cliente}": {
       get: {
         tags: ["Tickets"],

@@ -1,6 +1,11 @@
 <template>
   <div class="register-page d-flex align-items-center justify-content-center vh-100 text-white">
     <div class="card p-4 shadow-lg" style="width: 100%; max-width: 450px;">
+      <div class="w-100 mb-3" style="max-width: 600px;">
+      <RouterLink to="/dashboard" class="btn btn-primary w-100 fw-bold rounded-pill">
+        ⬅️ Voltar ao menu anterior
+      </RouterLink>
+    </div>
       <h2 class="text-center fw-bold text-white mb-3">Criar Conta</h2>
 
       <form @submit.prevent="handleRegister">

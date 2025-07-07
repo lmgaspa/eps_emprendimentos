@@ -19,6 +19,27 @@ export const getTicketsByCpf = async (req: Request, res: Response, next: NextFun
   }
 }
 
+export const getTicketsByEmpresa = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { empresa } = req.params;
+    const tickets = await Ticket.find({ empresa: { $regex: empresa.trim(), $options: 'i' } }).sort({ createdAt: -1 });
+
+    if (!tickets.length) {
+      res.status(404).json({ message: 'Empresa não encontrada no registro.' });
+      return;
+    }
+
+    const formatted = tickets.map(ticket => ({
+      ...ticket.toObject(),
+      createdAt: format(ticket.createdAt ?? new Date(), "dd/MM/yyyy HH:mm", { locale: ptBR }),
+    }));
+
+    res.json(formatted);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const getTicketsByEmail = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email } = req.params
