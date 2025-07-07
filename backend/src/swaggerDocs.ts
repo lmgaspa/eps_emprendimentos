@@ -77,498 +77,107 @@ export const swaggerDocs = {
     { name: "Autenticação", description: "Login e registro de usuários" },
   ],
   paths: {
-    "/tickets": {
-      post: {
-        tags: ["Tickets"],
-        summary: "Cria um novo ticket",
-        security: [{ bearerAuth: [] }],
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: { $ref: "#/components/schemas/TicketInput" },
-            },
-          },
-        },
-        responses: {
-          201: {
-            description: "Ticket criado com sucesso",
-            content: {
-              "application/json": {
-                schema: { $ref: "#/components/schemas/TicketOutput" },
-              },
-            },
-          },
-        },
-      },
-    },
-    "/tickets/cpf/{cpf}": {
-      get: {
-        tags: ["Tickets"],
-        summary: "Busca tickets por CPF",
-        security: [{ bearerAuth: [] }],
-        parameters: [
-          {
-            name: "cpf",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
-        ],
-        responses: {
-          200: { description: "Tickets encontrados" },
-          404: { description: "CPF não encontrado no registro." },
-        },
-      },
-      patch: {
-        tags: ["Tickets"],
-        summary: "Atualizar ticket por CPF",
-        parameters: [
-          {
-            name: "cpf",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
-        ],
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: { $ref: "#/components/schemas/Ticket" },
-            },
-          },
-        },
-        responses: {
-          200: { description: "Ticket atualizado com sucesso" },
-        },
-      },
-    },
-    "/tickets/cnpj/{cnpj}": {
-      get: {
-        tags: ["Tickets"],
-        summary: "Busca tickets por CNPJ",
-        security: [{ bearerAuth: [] }],
-        parameters: [
-          {
-            name: "cnpj",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
-        ],
-        responses: {
-          200: { description: "Tickets encontrados" },
-          404: { description: "CNPJ não encontrado no registro." },
-        },
-      },
-      patch: {
-        tags: ["Tickets"],
-        summary: "Atualizar ticket por CNPJ",
-        parameters: [
-          {
-            name: "cnpj",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
-        ],
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: { $ref: "#/components/schemas/Ticket" },
-            },
-          },
-        },
-        responses: {
-          200: { description: "Ticket atualizado com sucesso" },
-        },
-      },
-    },
-    "/tickets/whatsapp/{whatsapp}": {
-      get: {
-        tags: ["Tickets"],
-        summary: "Busca tickets por WhatsApp",
-        security: [{ bearerAuth: [] }],
-        parameters: [
-          {
-            name: "whatsapp",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
-        ],
-        responses: {
-          200: { description: "Tickets encontrados" },
-          404: { description: "WhatsApp não encontrado no registro." },
-        },
-      },
-      patch: {
-        tags: ["Tickets"],
-        summary: "Atualizar ticket por WhatsApp",
-        parameters: [
-          {
-            name: "whatsapp",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
-        ],
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: { $ref: "#/components/schemas/Ticket" },
-            },
-          },
-        },
-        responses: {
-          200: { description: "Ticket atualizado com sucesso" },
-        },
-      },
-    },
-    "/tickets/telefone/{telefone}": {
-      get: {
-        tags: ["Tickets"],
-        summary: "Busca tickets por Telefone",
-        security: [{ bearerAuth: [] }],
-        parameters: [
-          {
-            name: "telefone",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
-        ],
-        responses: {
-          200: { description: "Tickets encontrados" },
-          404: { description: "Telefone não encontrado no registro." },
-        },
-      },
-      patch: {
-        tags: ["Tickets"],
-        summary: "Atualizar ticket por Telefone",
-        parameters: [
-          {
-            name: "telefone",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
-        ],
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: { $ref: "#/components/schemas/Ticket" },
-            },
-          },
-        },
-        responses: {
-          200: { description: "Ticket atualizado com sucesso" },
-        },
-      },
-    },
-    "/tickets/email/{email}": {
-      get: {
-        tags: ["Tickets"],
-        summary: "Busca tickets por e-mail",
-        security: [{ bearerAuth: [] }],
-        parameters: [
-          {
-            name: "email",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-            description: "E-mail do cliente que registrou o ticket",
-          },
-        ],
-        responses: {
-          200: {
-            description: "Tickets encontrados com sucesso",
-            content: {
-              "application/json": {
-                schema: {
-                  type: "array",
-                  items: { $ref: "#/components/schemas/TicketOutput" },
-                },
-              },
-            },
-          },
-          404: { description: "E-mail não encontrado no registro." },
-          401: { description: "Token ausente ou inválido." },
-        },
-      },
-      patch: {
-        tags: ["Tickets"],
-        summary: "Atualizar ticket por E-mail",
-        parameters: [
-          {
-            name: "email",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
-        ],
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: { $ref: "#/components/schemas/Ticket" },
-            },
-          },
-        },
-        responses: {
-          200: { description: "Ticket atualizado com sucesso" },
-        },
-      },
-    },
-    "/tickets/nota/{notaServico}": {
-      get: {
-        tags: ["Tickets"],
-        summary: "Busca ticket pela nota de serviço",
-        security: [{ bearerAuth: [] }],
-        parameters: [
-          {
-            name: "notaServico",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
-        ],
-        responses: { 200: { description: "Ticket encontrado" } },
-      },
+    "/api/tickets/cpf/{cpf}": {
       put: {
         tags: ["Tickets"],
-        summary: "Atualizar ticket por Nota de Serviço",
+        summary: "Atualiza ticket por cpf (PUT)",
         parameters: [
-          {
-            name: "notaServico",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
+          { name: "cpf", in: "path", required: true, schema: { type: "string" } }
         ],
         requestBody: {
           required: true,
           content: {
             "application/json": {
-              schema: { $ref: "#/components/schemas/Ticket" },
-            },
-          },
+              schema: { $ref: "#/components/schemas/Ticket" }
+            }
+          }
         },
-        responses: {
-          200: { description: "Ticket atualizado com sucesso" },
-        },
-      },
-    },
-    "/tickets/{id}": {
-      get: {
-        tags: ["Tickets"],
-        summary: "Busca ticket por ID",
-        security: [{ bearerAuth: [] }],
-        parameters: [
-          {
-            name: "id",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
-        ],
-        responses: { 200: { description: "Ticket encontrado" } },
+        responses: { '200': { description: "Ticket atualizado com sucesso" } }
       },
       patch: {
         tags: ["Tickets"],
-        summary: "Atualizar ticket por ID",
+        summary: "Atualiza ticket por cpf (PATCH)",
         parameters: [
-          {
-            name: "id",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
+          { name: "cpf", in: "path", required: true, schema: { type: "string" } }
         ],
         requestBody: {
           required: true,
           content: {
             "application/json": {
-              schema: { $ref: "#/components/schemas/Ticket" },
-            },
-          },
+              schema: { $ref: "#/components/schemas/Ticket" }
+            }
+          }
         },
-        responses: {
-          200: { description: "Ticket atualizado com sucesso" },
-        },
-      },
+        responses: { '200': { description: "Ticket atualizado com sucesso" } }
+      }
     },
-    "/tickets/cliente/{cliente}": {
-      get: {
+    "/api/tickets/cnpj/{cnpj}": {
+      put: {
         tags: ["Tickets"],
-        summary: "Busca tickets por cliente",
-        security: [{ bearerAuth: [] }],
+        summary: "Atualiza ticket por cnpj (PUT)",
         parameters: [
-          {
-            name: "cliente",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
+          { name: "cnpj", in: "path", required: true, schema: { type: "string" } }
         ],
-        responses: { 200: { description: "Lista de tickets" } },
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/Ticket" }
+            }
+          }
+        },
+        responses: { '200': { description: "Ticket atualizado com sucesso" } }
       },
       patch: {
         tags: ["Tickets"],
-        summary: "Atualizar ticket por nome do cliente",
+        summary: "Atualiza ticket por cnpj (PATCH)",
         parameters: [
-          {
-            name: "cliente",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
+          { name: "cnpj", in: "path", required: true, schema: { type: "string" } }
         ],
         requestBody: {
           required: true,
           content: {
             "application/json": {
-              schema: { $ref: "#/components/schemas/Ticket" },
-            },
-          },
+              schema: { $ref: "#/components/schemas/Ticket" }
+            }
+          }
         },
-        responses: {
-          200: { description: "Ticket atualizado com sucesso" },
-        },
-      },
+        responses: { '200': { description: "Ticket atualizado com sucesso" } }
+      }
     },
-    "/tickets/all": {
-      get: {
+    "/api/tickets/email/{email}": {
+      put: {
         tags: ["Tickets"],
-        summary: "Lista todos os tickets",
-        security: [{ bearerAuth: [] }],
-        responses: {
-          200: { description: "Lista de tickets retornada com sucesso" },
-        },
-      },
-    },
-    "/auth/login": {
-      post: {
-        tags: ["Autenticação"],
-        summary: "Login de funcionário ou admin",
+        summary: "Atualiza ticket por email (PUT)",
+        parameters: [
+          { name: "email", in: "path", required: true, schema: { type: "string" } }
+        ],
         requestBody: {
           required: true,
           content: {
             "application/json": {
-              schema: {
-                type: "object",
-                properties: {
-                  email: { type: "string", example: "admin@eps.com" },
-                  password: { type: "string", example: "123456" },
-                },
-              },
-            },
-          },
+              schema: { $ref: "#/components/schemas/Ticket" }
+            }
+          }
         },
-        responses: {
-          200: {
-            description: "Login realizado com sucesso",
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    token: { type: "string", example: "Bearer abc123..." },
-                  },
-                },
-              },
-            },
-          },
-        },
+        responses: { '200': { description: "Ticket atualizado com sucesso" } }
       },
-    },
-    "/auth/register": {
-      post: {
-        tags: ["Autenticação"],
-        summary: "Registra um novo funcionário (somente admin)",
-        security: [{ bearerAuth: [] }],
+      patch: {
+        tags: ["Tickets"],
+        summary: "Atualiza ticket por email (PATCH)",
+        parameters: [
+          { name: "email", in: "path", required: true, schema: { type: "string" } }
+        ],
         requestBody: {
           required: true,
           content: {
             "application/json": {
-              schema: {
-                type: "object",
-                required: ["name", "email", "password", "role"],
-                properties: {
-                  name: { type: "string", example: "Novo Funcionário" },
-                  email: { type: "string", example: "novo@eps.com" },
-                  password: { type: "string", example: "123456" },
-                  role: {
-                    type: "string",
-                    enum: ["admin", "employee"],
-                    example: "employee",
-                  },
-                },
-              },
-            },
-          },
+              schema: { $ref: "#/components/schemas/Ticket" }
+            }
+          }
         },
-        responses: {
-          201: { description: "Funcionário registrado com sucesso" },
-          403: { description: "Acesso negado (apenas admin)" },
-        },
-      },
-    },
-    "/auth/forgot-password": {
-      post: {
-        tags: ["Autenticação"],
-        summary: "Solicita link de recuperação de senha",
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: {
-                type: "object",
-                required: ["email"],
-                properties: {
-                  email: { type: "string", example: "usuario@eps.com" },
-                },
-              },
-            },
-          },
-        },
-        responses: {
-          200: { description: "Link de redefinição enviado com sucesso" },
-          404: { description: "E-mail não encontrado" },
-        },
-      },
-    },
-    "/auth/reset-password": {
-      post: {
-        tags: ["Autenticação"],
-        summary: "Redefine a senha com token",
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: {
-                type: "object",
-                required: ["token", "newPassword"],
-                properties: {
-                  token: {
-                    type: "string",
-                    example: "jwt-token-recebido-por-email",
-                  },
-                  newPassword: { type: "string", example: "novaSenha123" },
-                },
-              },
-            },
-          },
-        },
-        responses: {
-          200: { description: "Senha redefinida com sucesso" },
-          400: { description: "Token inválido ou expirado" },
-        },
-      },
-    },
-  },
+        responses: { '200': { description: "Ticket atualizado com sucesso" } }
+      }
+    }
+  }
 };
