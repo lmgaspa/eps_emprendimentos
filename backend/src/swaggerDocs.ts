@@ -88,97 +88,6 @@ export const swaggerDocs = {
         },
       },
     },
-    "/tickets/cliente/{cliente}": {
-      get: {
-        tags: ["Tickets"],
-        summary: "Busca tickets por cliente",
-        security: [{ bearerAuth: [] }],
-        parameters: [
-          {
-            name: "cliente",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
-        ],
-        responses: { 200: { description: "Lista de tickets" } },
-      },
-    },
-    "/tickets/nota/{notaServico}": {
-      get: {
-        tags: ["Tickets"],
-        summary: "Busca ticket pela nota de serviço",
-        security: [{ bearerAuth: [] }],
-        parameters: [
-          {
-            name: "notaServico",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
-        ],
-        responses: { 200: { description: "Ticket encontrado" } },
-      },
-    },
-    "/tickets/all": {
-      get: {
-        tags: ["Tickets"],
-        summary: "Lista todos os tickets (admin)",
-        security: [{ bearerAuth: [] }],
-        responses: { 200: { description: "Todos os tickets" } },
-      },
-    },
-    "/tickets/{id}": {
-      get: {
-        tags: ["Tickets"],
-        summary: "Busca ticket por ID",
-        security: [{ bearerAuth: [] }],
-        parameters: [
-          {
-            name: "id",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
-        ],
-        responses: { 200: { description: "Ticket encontrado" } },
-      },
-    },
-    "/auth/login": {
-      post: {
-        tags: ["Autenticação"],
-        summary: "Login de funcionário ou admin",
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: {
-                type: "object",
-                properties: {
-                  email: { type: "string", example: "admin@eps.com" },
-                  password: { type: "string", example: "123456" },
-                },
-              },
-            },
-          },
-        },
-        responses: {
-          200: {
-            description: "Login realizado com sucesso",
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    token: { type: "string", example: "Bearer abc123..." },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
     "/tickets/cpf/{cpf}": {
       get: {
         tags: ["Tickets"],
@@ -259,7 +168,7 @@ export const swaggerDocs = {
         },
       },
     },
-    "/tickets/cliente/{email}": {
+    "/tickets/email/{email}": {
       get: {
         tags: ["Tickets"],
         summary: "Busca tickets por e-mail",
@@ -291,6 +200,97 @@ export const swaggerDocs = {
           },
           401: {
             description: "Token ausente ou inválido.",
+          },
+        },
+      },
+    },
+    "/tickets/nota/{notaServico}": {
+      get: {
+        tags: ["Tickets"],
+        summary: "Busca ticket pela nota de serviço",
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "notaServico",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        responses: { 200: { description: "Ticket encontrado" } },
+      },
+    },
+    "/tickets/cliente/{cliente}": {
+      get: {
+        tags: ["Tickets"],
+        summary: "Busca tickets por cliente",
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "cliente",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        responses: { 200: { description: "Lista de tickets" } },
+      },
+    },
+    "/tickets/all": {
+      get: {
+        tags: ["Tickets"],
+        summary: "Lista todos os tickets (admin)",
+        security: [{ bearerAuth: [] }],
+        responses: { 200: { description: "Todos os tickets" } },
+      },
+    },
+    "/tickets/{id}": {
+      get: {
+        tags: ["Tickets"],
+        summary: "Busca ticket por ID",
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        responses: { 200: { description: "Ticket encontrado" } },
+      },
+    },
+    "/auth/login": {
+      post: {
+        tags: ["Autenticação"],
+        summary: "Login de funcionário ou admin",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  email: { type: "string", example: "admin@eps.com" },
+                  password: { type: "string", example: "123456" },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Login realizado com sucesso",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    token: { type: "string", example: "Bearer abc123..." },
+                  },
+                },
+              },
+            },
           },
         },
       },
