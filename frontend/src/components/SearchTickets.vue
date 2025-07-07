@@ -2,7 +2,6 @@
   <div class="full-height d-flex flex-column align-items-center p-4">
     <div class="gradient-overlay"></div>
 
-
     <div class="w-100 mb-3" style="max-width: 600px;">
       <RouterLink to="/dashboard" class="btn btn-success w-100 fw-bold rounded-pill">
         ⬅️ Voltar ao menu anterior
@@ -24,14 +23,14 @@
           <option value="telefone">Telefone</option>
           <option value="email">E-mail</option>
           <option value="nota">Nota de Serviço</option>
+          <option value="empresa">Empresa</option>
           <option value="all">Todos os Tickets</option>
         </select>
       </div>
 
       <div class="form-group mb-3" v-if="searchType !== '' && searchType !== 'all'">
         <label class="form-label text-white">{{ labelForType }}</label>
-        <input v-model="searchValue" class="form-control" :type="searchType === 'email' ? 'email' : 'text'"
-          :placeholder="labelForType" required />
+        <input v-model="searchValue" class="form-control" :type="searchType === 'email' ? 'email' : 'text'" :placeholder="labelForType" required />
       </div>
 
       <button class="btn btn-warning w-100" @click="searchTicket">Buscar</button>
@@ -39,7 +38,6 @@
       <p class="text-danger text-center mt-3 fw-bold" v-if="notFound">{{ notFoundMessage }}</p>
     </div>
 
-    <!-- Resultado -->
     <div v-if="paginatedTickets.length > 0" class="card p-4 w-100 mt-4" style="max-width: 600px;">
       <h4 class="text-white mb-3">Resultado</h4>
 
@@ -59,10 +57,9 @@
 
       <div class="d-flex justify-content-between mt-3" v-if="totalPages > 1">
         <button class="btn btn-outline-light" :disabled="page === 1" @click="page--">⬅️ Anterior</button>
-        <button class="btn btn-outline-light" :disabled="page === totalPages" @click="page++">Próxima ➡️</button>
+        <button class="btn btn-outline-light" :disabled="page === totalPages" @click="page++">Próxima ➔</button>
       </div>
     </div>
-
 
     <div v-if="editingTicket" class="card p-4 w-100 mt-4" style="max-width: 600px;">
       <h4 class="text-white mb-3">Atualizar Ticket</h4>
@@ -74,13 +71,13 @@
       <input v-model="editingTicket.whatsapp" class="form-control mb-2" placeholder="WhatsApp" />
       <input v-model="editingTicket.telefone" class="form-control mb-2" placeholder="Telefone" />
       <input v-model="editingTicket.emailEmpresa" class="form-control mb-2" placeholder="E-mail" />
-      <textarea v-model="editingTicket.descricaoServico" class="form-control mb-3" rows="3"
-        placeholder="Descrição do serviço"></textarea>
+      <textarea v-model="editingTicket.descricaoServico" class="form-control mb-3" rows="3" placeholder="Descrição do serviço"></textarea>
 
       <button class="btn btn-success w-100" @click="updateTicket">Salvar Alterações</button>
     </div>
   </div>
 </template>
+
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'

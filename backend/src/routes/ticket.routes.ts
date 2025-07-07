@@ -22,8 +22,18 @@ const router = Router();
 // Criação de ticket (qualquer funcionário)
 router.post('/', verifyToken, createTicket);
 
-
 router.get('/tickets/cpf/:cpf', getTicketsByCpf);
+router.get('/tickets/cnpj/:cnpj', getTicketsByCnpj);
+router.get('/tickets/email/:email', getTicketsByEmail);
+router.get('/tickets/telefone/:telefone', getTicketsByTelefone);
+router.get('/tickets/whatsapp/:whatsapp', getTicketsByWhatsapp);
+router.get('/tickets/empresa/:empresa', getTicketsByEmpresa);
+
+// Buscar todos (protegido)
+router.get('/all', verifyToken, getAllTickets);
+
+// ⚠️ Essa rota por último!
+router.get('/:id', verifyToken, getTicketById);router.get('/tickets/cpf/:cpf', getTicketsByCpf);
 router.get('/tickets/cnpj/:cnpj', getTicketsByCnpj);
 router.get('/tickets/email/:email', getTicketsByEmail);
 router.get('/tickets/telefone/:telefone', getTicketsByTelefone);
