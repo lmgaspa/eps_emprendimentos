@@ -11,6 +11,7 @@ import {
   getTicketsByCnpj,
   getTicketsByWhatsapp,
   getTicketsByTelefone,
+  getTicketsByEmail
 } from '../controllers/ticketSearchController'
 import { verifyToken } from '../middlewares/auth.middleware';
 import { isAdmin } from '../middlewares/isAdmin';
@@ -26,7 +27,7 @@ router.get('/tickets/whatsapp/:whatsapp', getTicketsByWhatsapp)
 router.get('/tickets/telefone/:telefone', getTicketsByTelefone)
 // Buscar tickets por nome do cliente
 router.get('/cliente/:cliente', verifyToken, getTicketsByCliente);
-
+router.get('/tickets/cliente/:email', getTicketsByEmail)
 // Buscar ticket por número da nota de serviço
 router.get('/nota/:notaServico', verifyToken, getTicketByNota);
 

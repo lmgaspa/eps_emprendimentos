@@ -19,6 +19,17 @@ export const getTicketsByCpf = async (req: Request, res: Response, next: NextFun
   }
 }
 
+export const getTicketsByEmail = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email } = req.params
+    const tickets = await Ticket.find({ emailEmpresa: email })
+    if (!tickets.length) return res.status(404).json({ message: 'E-mail não encontrado no registro.' })
+    res.json(tickets.map(formatResult))
+  } catch (err) {
+    next(err)
+  }
+}
+
 export const getTicketsByCnpj = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { cnpj } = req.params
