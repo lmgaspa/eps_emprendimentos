@@ -7,9 +7,6 @@
       <p class="lead mb-4">Gerencie seus chamados técnicos com facilidade.</p>
 
       <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
-        <button @click="goToChamados" class="btn btn-success fw-semibold px-4 rounded-pill">
-          Ver Chamados
-        </button>
         <button @click="goToBuscarNota" class="btn btn-info fw-semibold px-4 rounded-pill">
           Buscar Nota de Serviço
         </button>
@@ -59,8 +56,7 @@ onMounted(async () => {
   }
 })
 
-const goToChamados = () => router.push('/tickets')
-const goToBuscarNota = () => router.push('/search-ticket')
+const goToBuscarNota = () => router.push('/busca-nota-de-servico')
 const goToNovaNota = () => router.push('/registrar-ticket')
 const goToRegistrarFuncionario = () => router.push('/register')
 const logout = () => {
