@@ -32,16 +32,12 @@ router.get('/tickets/empresa/:empresa', getTicketsByEmpresa);
 // Buscar todos (protegido)
 router.get('/all', verifyToken, getAllTickets);
 
-// ⚠️ Essa rota por último!
-router.get('/:id', verifyToken, getTicketById);router.get('/tickets/cpf/:cpf', getTicketsByCpf);
-router.get('/tickets/cnpj/:cnpj', getTicketsByCnpj);
-router.get('/tickets/email/:email', getTicketsByEmail);
-router.get('/tickets/telefone/:telefone', getTicketsByTelefone);
-router.get('/tickets/whatsapp/:whatsapp', getTicketsByWhatsapp);
-router.get('/tickets/empresa/:empresa', getTicketsByEmpresa);
-router.get('/all', verifyToken, getAllTickets);
-
-// Buscar ticket por ID (deixe por último)
+router.get('/cpf/:cpf', getTicketsByCpf);
+router.get('/cnpj/:cnpj', getTicketsByCnpj);
+router.get('/email/:email', getTicketsByEmail);
+router.get('/telefone/:telefone', getTicketsByTelefone);
+router.get('/whatsapp/:whatsapp', getTicketsByWhatsapp);
+router.get('/empresa/:empresa', getTicketsByEmpresa);
 router.get('/:id', verifyToken, getTicketById);
 
 const camposPermitidos = ['cliente', 'id', 'cpf', 'cnpj', 'whatsapp', 'telefone', 'emailEmpresa', 'notaServico']
