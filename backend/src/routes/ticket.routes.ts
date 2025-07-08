@@ -38,7 +38,8 @@ router.get('/email/:email', getTicketsByEmail);
 router.get('/telefone/:telefone', getTicketsByTelefone);
 router.get('/whatsapp/:whatsapp', getTicketsByWhatsapp);
 router.get('/empresa/:empresa', getTicketsByEmpresa);
-router.get('/:id', verifyToken, getTicketById);
+router.get('/tickets/nota/:id', getTicketByNota)
+router.get('/cliente/:cliente', getTicketsByCliente);
 
 const camposPermitidos = ['cliente', 'id', 'cpf', 'cnpj', 'whatsapp', 'telefone', 'emailEmpresa', 'notaServico']
 

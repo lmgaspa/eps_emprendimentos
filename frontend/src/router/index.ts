@@ -8,6 +8,7 @@
   import ForgotPassword from '../components/ForgotPassword.vue'
   import SenhaEnviada from '../components/SenhaEnviada.vue'
 import ResetPassword from '../components/ResetPassword.vue'
+import EditarTicket from '../components/EditarTicket.vue'
 
   const routes = [
     { path: '/', component: HomePage },
@@ -29,6 +30,12 @@ import ResetPassword from '../components/ResetPassword.vue'
       component: SearchTickets,
       meta: { requiresAuth: true }
     },
+    {
+    path: '/editar-ticket/:notaServico',
+    component: EditarTicket,
+    props: true,
+    meta: { requiresAuth: true }
+  }
   ]
 
   const router = createRouter({

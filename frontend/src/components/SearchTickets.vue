@@ -1,3 +1,4 @@
+<!-- SearchTickets.vue -->
 <template>
   <div class="full-height d-flex flex-column align-items-center p-4">
     <div class="gradient-overlay"></div>
@@ -16,14 +17,13 @@
         <select v-model="searchType" class="form-select">
           <option disabled value="">Selecione</option>
           <option value="cliente">Nome do Cliente</option>
-          <option value="id">ID do Ticket</option>
+          <option value="empresa">Empresa</option>
           <option value="cpf">CPF</option>
           <option value="cnpj">CNPJ</option>
           <option value="whatsapp">WhatsApp</option>
           <option value="telefone">Telefone</option>
           <option value="email">E-mail</option>
           <option value="nota">Nota de Serviço</option>
-          <option value="empresa">Empresa</option>
           <option value="all">Todos os Tickets</option>
         </select>
       </div>
@@ -52,7 +52,7 @@
         <p><strong>Email:</strong> {{ ticket.emailEmpresa }}</p>
         <p><strong>Descrição:</strong> {{ ticket.descricaoServico }}</p>
 
-        <button class="btn btn-primary btn-sm mt-2" @click="editTicket(ticket)">Editar</button>
+        <button class="btn btn-primary btn-sm mt-2" @click="goToEdit(ticket)">Editar</button>
       </div>
 
       <div class="d-flex justify-content-between mt-3" v-if="totalPages > 1">
@@ -60,86 +60,41 @@
         <button class="btn btn-outline-light" :disabled="page === totalPages" @click="page++">Próxima ➔</button>
       </div>
     </div>
-
-    <div v-if="editingTicket" class="card p-4 w-100 mt-4" style="max-width: 600px;">
-      <h4 class="text-white mb-3">Atualizar Ticket</h4>
-      <p class="text-secondary mb-2"><strong>Nota de Serviço (imutável):</strong> {{ editingTicket.notaServico }}</p>
-      <input v-model="editingTicket.cliente" class="form-control mb-2" placeholder="Cliente" />
-      <input v-model="editingTicket.empresa" class="form-control mb-2" placeholder="Empresa" />
-      <input v-model="editingTicket.cpf" class="form-control mb-2" placeholder="CPF" />
-      <input v-model="editingTicket.cnpj" class="form-control mb-2" placeholder="CNPJ" />
-      <input v-model="editingTicket.whatsapp" class="form-control mb-2" placeholder="WhatsApp" />
-      <input v-model="editingTicket.telefone" class="form-control mb-2" placeholder="Telefone" />
-      <input v-model="editingTicket.emailEmpresa" class="form-control mb-2" placeholder="E-mail" />
-      <textarea v-model="editingTicket.descricaoServico" class="form-control mb-3" rows="3" placeholder="Descrição do serviço"></textarea>
-
-      <button class="btn btn-success w-100" @click="updateTicket">Salvar Alterações</button>
-    </div>
   </div>
 </template>
 
-
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { RouterLink } from 'vue-router'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const goToEdit = (ticket: any) => {
+  router.push(`/editar-ticket/${ticket.notaServico}`)
+}
 
 const searchType = ref('')
 const searchValue = ref('')
 const tickets = ref<any[]>([])
-const editingTicket = ref<any>(null)
 const page = ref(1)
 const perPage = 20
 const notFound = ref(false)
 
 watch(searchValue, (val) => {
   if (searchType.value === 'cpf') {
-    searchValue.value = val.replace(/\D/g, '').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2')
-  }
-  if (searchType.value === 'cnpj') {
-    searchValue.value = val.replace(/\D/g, '').replace(/(\d{2})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1/$2').replace(/(\d{4})(\d{1,2})$/, '$1-$2')
-  }
-  if (searchType.value === 'whatsapp') {
-    searchValue.value = val.replace(/\D/g, '').replace(/(\d{2})(\d)/, '($1)$2').replace(/(\d{5})(\d{4})$/, '$1-$2')
-  }
-  if (searchType.value === 'telefone') {
-    searchValue.value = val.replace(/\D/g, '').replace(/(\d{2})(\d)/, '($1)$2').replace(/(\d{4})(\d{4})$/, '$1-$2')
-  }
-})
-
-watch(searchValue, (val) => {
-  if (searchType.value === 'cpf') {
-    searchValue.value = val
-      .replace(/\D/g, '')
-      .slice(0, 11) // máximo de 11 dígitos
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
+    searchValue.value = val.replace(/\D/g, '').slice(0, 11).replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2')
   }
 
   if (searchType.value === 'cnpj') {
-    searchValue.value = val
-      .replace(/\D/g, '')
-      .slice(0, 14) // máximo de 14 dígitos
-      .replace(/^(\d{2})(\d)/, '$1.$2')
-      .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
-      .replace(/^(\d{2})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3/$4')
-      .replace(/(\d{4})(\d{1,2})$/, '$1-$2')
+    searchValue.value = val.replace(/\D/g, '').slice(0, 14).replace(/^(\d{2})(\d)/, '$1.$2').replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3').replace(/^(\d{2})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3/$4').replace(/(\d{4})(\d{1,2})$/, '$1-$2')
   }
 
   if (searchType.value === 'whatsapp') {
-    searchValue.value = val
-      .replace(/\D/g, '')
-      .slice(0, 11) // máximo de 11 dígitos
-      .replace(/^(\d{2})(\d)/, '($1)$2')
-      .replace(/(\d{5})(\d{4})$/, '$1-$2')
+    searchValue.value = val.replace(/\D/g, '').slice(0, 11).replace(/^(\d{2})(\d)/, '($1)$2').replace(/(\d{5})(\d{4})$/, '$1-$2')
   }
 
   if (searchType.value === 'telefone') {
-    searchValue.value = val
-      .replace(/\D/g, '')
-      .slice(0, 10) // máximo de 10 dígitos
-      .replace(/^(\d{2})(\d)/, '($1)$2')
-      .replace(/(\d{4})(\d{4})$/, '$1-$2')
+    searchValue.value = val.replace(/\D/g, '').slice(0, 10).replace(/^(\d{2})(\d)/, '($1)$2').replace(/(\d{4})(\d{4})$/, '$1-$2')
   }
 })
 
@@ -158,7 +113,7 @@ const totalPages = computed(() => Math.ceil(tickets.value.length / perPage))
 const labelForType = computed(() => {
   switch (searchType.value) {
     case 'cliente': return 'Nome do Cliente'
-    case 'id': return 'ID do Ticket'
+    case 'empresa': return 'Empresa'
     case 'cpf': return 'CPF'
     case 'cnpj': return 'CNPJ'
     case 'whatsapp': return 'WhatsApp'
@@ -170,15 +125,7 @@ const labelForType = computed(() => {
 })
 
 const notFoundMessage = computed(() => {
-  switch (searchType.value) {
-    case 'cpf': return 'CPF não encontrado no registro.'
-    case 'cnpj': return 'CNPJ não encontrado no registro.'
-    case 'whatsapp': return 'WhatsApp não encontrado no registro.'
-    case 'telefone': return 'Telefone não encontrado no registro.'
-    case 'email': return 'E-mail não encontrado no registro.'
-    case 'nota': return 'Nota de Serviço não encontrada.'
-    default: return 'Nenhum registro encontrado.'
-  }
+  return 'Nenhum registro encontrado.'
 })
 
 const searchTicket = async () => {
@@ -196,7 +143,7 @@ const searchTicket = async () => {
     const encoded = encodeURIComponent(searchValue.value)
     switch (searchType.value) {
       case 'cliente': url = `https://eps-emprendimentos.onrender.com/api/tickets/cliente/${encoded}`; break
-      case 'id': url = `https://eps-emprendimentos.onrender.com/api/tickets/${encoded}`; break
+      case 'empresa': url = `https://eps-emprendimentos.onrender.com/api/tickets/empresa/${encoded}`; break
       case 'cpf': url = `https://eps-emprendimentos.onrender.com/api/tickets/cpf/${encoded}`; break
       case 'cnpj': url = `https://eps-emprendimentos.onrender.com/api/tickets/cnpj/${encoded}`; break
       case 'whatsapp': url = `https://eps-emprendimentos.onrender.com/api/tickets/whatsapp/${encoded}`; break
@@ -225,47 +172,12 @@ const searchTicket = async () => {
       return
     }
 
-    if (result.length === 0) {
-      notFound.value = true
-      tickets.value = []
-      return
-    }
-
     tickets.value = result
     page.value = 1
-    notFound.value = false
+    notFound.value = result.length === 0
   } catch (err) {
     console.error('Erro ao buscar tickets:', err)
     notFound.value = true
-  }
-}
-
-const editTicket = (ticket: any) => {
-  editingTicket.value = { ...ticket }
-}
-
-const updateTicket = async () => {
-  try {
-    const token = localStorage.getItem('token')
-    const response = await fetch(
-      `https://eps-emprendimentos.onrender.com/api/tickets/nota/${editingTicket.value.notaServico}`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(editingTicket.value)
-      }
-    )
-
-    if (!response.ok) throw new Error('Erro ao atualizar ticket')
-    alert('Ticket atualizado com sucesso!')
-    editingTicket.value = null
-    searchTicket()
-  } catch (err) {
-    console.error('Erro:', err)
-    alert('Erro ao atualizar')
   }
 }
 </script>

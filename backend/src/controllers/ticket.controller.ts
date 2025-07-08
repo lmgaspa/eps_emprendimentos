@@ -102,22 +102,20 @@ export const getTicketsByCliente = async (req: Request, res: Response, next: Nex
   }
 };
 
-export const getTicketByNota = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const getTicketByNota = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { notaServico } = req.params;
-    const ticket = await Ticket.findOne({ notaServico });
+    const { id } = req.params
+    const ticket = await Ticket.findOne({ notaServico: id })
 
     if (!ticket) {
-      res.status(404).json({ message: 'Ticket não encontrado pela nota de serviço' });
-      return;
+      return res.status(404).json({ message: 'Nota de serviço não encontrada.' })
     }
 
-    const formattedDate = format(ticket.createdAt ?? new Date(), "dd/MM/yyyy HH:mm", { locale: ptBR });
-    res.json({ ...ticket.toObject(), createdAt: formattedDate });
+    res.json(ticket)
   } catch (err) {
-    next(err);
+    next(err)
   }
-};
+}
 
 export const getAllTickets = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {

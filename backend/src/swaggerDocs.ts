@@ -1,6 +1,3 @@
-/**
- * Documentação Swagger centralizada
- */
 export const swaggerDocs = {
   openapi: "3.0.0",
   info: {
@@ -32,10 +29,7 @@ export const swaggerDocs = {
           emailEmpresa: { type: "string", example: "contato@empresa.com" },
           telefone: { type: "string", example: "(71)3212-1229" },
           whatsapp: { type: "string", example: "(73)99410-5740" },
-          descricaoServico: {
-            type: "string",
-            example: "Erro na geração de relatórios",
-          },
+          descricaoServico: { type: "string", example: "Erro na geração de relatórios" },
         },
       },
       TicketOutput: {
@@ -46,11 +40,7 @@ export const swaggerDocs = {
             properties: {
               _id: { type: "string", example: "665f7cba1e4f230d58bfa1ee" },
               notaServico: { type: "string", example: "NS-1721220000000" },
-              createdAt: {
-                type: "string",
-                format: "date-time",
-                example: "2025-06-16 07:00",
-              },
+              createdAt: { type: "string", format: "date-time", example: "2025-06-16 07:00" },
             },
           },
         ],
@@ -102,62 +92,104 @@ export const swaggerDocs = {
         },
       },
     },
-    "/api/tickets/{id}": {
-      get: {
-        tags: ["Tickets"],
-        summary: "Busca ticket por ID",
-        security: [{ bearerAuth: [] }],
-        parameters: [
-          { name: "id", in: "path", required: true, schema: { type: "string" } }
-        ],
-        responses: {
-          200: { description: "Ticket encontrado" },
-          404: { description: "Ticket não encontrado" }
-        }
-      }
-    },
-    "/api/tickets/nota/{notaServico}": {
+    "/api/tickets/nota/{id}": {
       get: {
         tags: ["Tickets"],
         summary: "Busca ticket pela nota de serviço",
-        security: [{ bearerAuth: [] }],
         parameters: [
-          { name: "notaServico", in: "path", required: true, schema: { type: "string" } }
+          { name: "id", in: "path", required: true, schema: { type: "string" } },
         ],
         responses: {
           200: { description: "Ticket encontrado" },
-          404: { description: "Ticket não encontrado pela nota de serviço" }
-        }
-      }
+          404: { description: "Nota de serviço não encontrada." },
+        },
+      },
+    },
+    "/api/tickets/all": {
+      get: {
+        tags: ["Tickets"],
+        summary: "Lista todos os tickets",
+        security: [{ bearerAuth: [] }],
+        responses: {
+          200: { description: "Lista de tickets retornada com sucesso" },
+        },
+      },
+    },
+    "/api/tickets/cpf/{cpf}": {
+      get: {
+        tags: ["Tickets"],
+        summary: "Buscar tickets por CPF",
+        parameters: [
+          { name: "cpf", in: "path", required: true, schema: { type: "string" } },
+        ],
+        responses: {
+          200: { description: "Lista de tickets" },
+          404: { description: "CPF não encontrado" },
+        },
+      },
+    },
+    "/api/tickets/cnpj/{cnpj}": {
+      get: {
+        tags: ["Tickets"],
+        summary: "Buscar tickets por CNPJ",
+        parameters: [
+          { name: "cnpj", in: "path", required: true, schema: { type: "string" } },
+        ],
+        responses: {
+          200: { description: "Lista de tickets" },
+          404: { description: "CNPJ não encontrado" },
+        },
+      },
+    },
+    "/api/tickets/whatsapp/{whatsapp}": {
+      get: {
+        tags: ["Tickets"],
+        summary: "Buscar tickets por WhatsApp",
+        parameters: [
+          { name: "whatsapp", in: "path", required: true, schema: { type: "string" } },
+        ],
+        responses: {
+          200: { description: "Lista de tickets" },
+          404: { description: "WhatsApp não encontrado" },
+        },
+      },
+    },
+    "/api/tickets/telefone/{telefone}": {
+      get: {
+        tags: ["Tickets"],
+        summary: "Buscar tickets por telefone",
+        parameters: [
+          { name: "telefone", in: "path", required: true, schema: { type: "string" } },
+        ],
+        responses: {
+          200: { description: "Lista de tickets" },
+          404: { description: "Telefone não encontrado" },
+        },
+      },
+    },
+    "/api/tickets/email/{email}": {
+      get: {
+        tags: ["Tickets"],
+        summary: "Buscar tickets por email da empresa",
+        parameters: [
+          { name: "email", in: "path", required: true, schema: { type: "string" } },
+        ],
+        responses: {
+          200: { description: "Lista de tickets" },
+          404: { description: "Email não encontrado" },
+        },
+      },
     },
     "/api/tickets/empresa/{empresa}": {
       get: {
         tags: ["Tickets"],
         summary: "Buscar tickets por empresa",
         parameters: [
-          {
-            name: "empresa",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-            example: "Empresa XYZ LTDA",
-          },
+          { name: "empresa", in: "path", required: true, schema: { type: "string" } },
         ],
         responses: {
-          200: {
-            description: "Lista de tickets encontrados",
-            content: {
-              "application/json": {
-                schema: {
-                  type: "array",
-                  items: { $ref: "#/components/schemas/Ticket" },
-                },
-              },
-            },
-          },
-          404: {
-            description: "Empresa não encontrada no registro.",
-          },
+          200: { description: "Lista de tickets encontrados" },
+          404: { description: "Empresa não encontrada no registro." },
         },
       },
     },
@@ -167,59 +199,14 @@ export const swaggerDocs = {
         summary: "Busca tickets por nome do cliente",
         security: [{ bearerAuth: [] }],
         parameters: [
-          { name: "cliente", in: "path", required: true, schema: { type: "string" } }
+          { name: "cliente", in: "path", required: true, schema: { type: "string" } },
         ],
         responses: {
-          200: { description: "Lista de tickets" }
-        }
-      }
-    },
-    "/api/tickets/all": {
-      get: {
-        tags: ["Tickets"],
-        summary: "Lista todos os tickets",
-        security: [{ bearerAuth: [] }],
-        responses: {
-          200: { description: "Lista de tickets retornada com sucesso" }
-        }
-      }
-    },
-    "/api/tickets/{campo}/{valor}": {
-      put: {
-        tags: ["Tickets"],
-        summary: "Atualiza ticket por campo (PUT)",
-        parameters: [
-          { name: "campo", in: "path", required: true, schema: { type: "string" } },
-          { name: "valor", in: "path", required: true, schema: { type: "string" } }
-        ],
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: { $ref: "#/components/schemas/Ticket" }
-            }
-          }
+          200: { description: "Lista de tickets" },
         },
-        responses: { '200': { description: "Ticket atualizado com sucesso" } }
       },
-      patch: {
-        tags: ["Tickets"],
-        summary: "Atualiza parcialmente ticket por campo (PATCH)",
-        parameters: [
-          { name: "campo", in: "path", required: true, schema: { type: "string" } },
-          { name: "valor", in: "path", required: true, schema: { type: "string" } }
-        ],
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: { $ref: "#/components/schemas/Ticket" }
-            }
-          }
-        },
-        responses: { '200': { description: "Ticket atualizado com sucesso" } }
-      }
     },
+  },
     "/api/auth/login": {
       post: {
         tags: ["Autenticação"],
