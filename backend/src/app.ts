@@ -13,7 +13,6 @@ import { pathToFileURL } from 'url';
     .then(() => console.log('Conectado ao MongoDB'))
     .catch(err => console.error('Erro ao conectar no MongoDB:', err));
 
-
   app.use(cors({
     origin: [
       'http://localhost:5173',           // Vite

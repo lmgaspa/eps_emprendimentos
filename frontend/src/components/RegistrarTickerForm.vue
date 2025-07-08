@@ -168,7 +168,7 @@ export default defineComponent({
   }
 
   try {
-    const response = await fetch('https://eps-emprendimentos.onrender.com/api/tickets/', {
+    const response = await fetch('https://eps-6c85169e1d63.herokuapp.com/api/tickets/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

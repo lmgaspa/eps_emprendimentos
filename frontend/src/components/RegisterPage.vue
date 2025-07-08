@@ -104,7 +104,7 @@ const handleRegister = async () => {
       return
     }
 
-    const response = await fetch('https://eps-emprendimentos.onrender.com/api/auth/register', {
+    const response = await fetch('https://eps-6c85169e1d63.herokuapp.com/api/auth/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -1,4 +1,3 @@
-<!-- SearchTickets.vue -->
 <template>
   <div class="full-height d-flex flex-column align-items-center p-4">
     <div class="gradient-overlay"></div>
@@ -34,14 +33,13 @@
       </div>
 
       <button class="btn btn-warning w-100" @click="searchTicket">Buscar</button>
-
       <p class="text-danger text-center mt-3 fw-bold" v-if="notFound">{{ notFoundMessage }}</p>
     </div>
 
     <div v-if="paginatedTickets.length > 0" class="card p-4 w-100 mt-4" style="max-width: 600px;">
       <h4 class="text-white mb-3">Resultado</h4>
 
-      <div v-for="ticket in paginatedTickets" :key="ticket.notaServico" class="mb-4 p-3 bg-dark text-white rounded">
+      <div v-for="ticket in paginatedTickets" :key="ticket._id" class="mb-4 p-3 bg-dark text-white rounded">
         <p><strong>Nota de Serviço:</strong> {{ ticket.notaServico }}</p>
         <p><strong>Cliente:</strong> {{ ticket.cliente }}</p>
         <p><strong>Empresa:</strong> {{ ticket.empresa }}</p>
@@ -68,10 +66,7 @@ import { ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-
-const goToEdit = (ticket: any) => {
-  router.push(`/editar-ticket/${ticket.notaServico}`)
-}
+const baseUrl = 'https://eps-6c85169e1d63.herokuapp.com/api/tickets'
 
 const searchType = ref('')
 const searchValue = ref('')
@@ -80,20 +75,18 @@ const page = ref(1)
 const perPage = 20
 const notFound = ref(false)
 
+const goToEdit = (ticket: any) => {
+  router.push(`/editar-ticket/${ticket.notaServico}`)
+}
+
 watch(searchValue, (val) => {
   if (searchType.value === 'cpf') {
     searchValue.value = val.replace(/\D/g, '').slice(0, 11).replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2')
-  }
-
-  if (searchType.value === 'cnpj') {
+  } else if (searchType.value === 'cnpj') {
     searchValue.value = val.replace(/\D/g, '').slice(0, 14).replace(/^(\d{2})(\d)/, '$1.$2').replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3').replace(/^(\d{2})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3/$4').replace(/(\d{4})(\d{1,2})$/, '$1-$2')
-  }
-
-  if (searchType.value === 'whatsapp') {
+  } else if (searchType.value === 'whatsapp') {
     searchValue.value = val.replace(/\D/g, '').slice(0, 11).replace(/^(\d{2})(\d)/, '($1)$2').replace(/(\d{5})(\d{4})$/, '$1-$2')
-  }
-
-  if (searchType.value === 'telefone') {
+  } else if (searchType.value === 'telefone') {
     searchValue.value = val.replace(/\D/g, '').slice(0, 10).replace(/^(\d{2})(\d)/, '($1)$2').replace(/(\d{4})(\d{4})$/, '$1-$2')
   }
 })
@@ -101,14 +94,6 @@ watch(searchValue, (val) => {
 watch(searchType, () => {
   searchValue.value = ''
 })
-
-const paginatedTickets = computed(() => {
-  const start = (page.value - 1) * perPage
-  const end = page.value * perPage
-  return tickets.value.slice(start, end)
-})
-
-const totalPages = computed(() => Math.ceil(tickets.value.length / perPage))
 
 const labelForType = computed(() => {
   switch (searchType.value) {
@@ -120,13 +105,18 @@ const labelForType = computed(() => {
     case 'telefone': return 'Telefone'
     case 'email': return 'E-mail'
     case 'nota': return 'Nota de Serviço'
-    default: return 'Buscar'
+    default: return ''
   }
 })
 
-const notFoundMessage = computed(() => {
-  return 'Nenhum registro encontrado.'
+const paginatedTickets = computed(() => {
+  const start = (page.value - 1) * perPage
+  return tickets.value.slice(start, start + perPage)
 })
+
+const totalPages = computed(() => Math.ceil(tickets.value.length / perPage))
+
+const notFoundMessage = computed(() => 'Nenhum registro encontrado.')
 
 const searchTicket = async () => {
   if (!searchType.value) return
@@ -137,46 +127,51 @@ const searchTicket = async () => {
   }
 
   let url = ''
+  const token = localStorage.getItem('token')
+  const encoded = encodeURIComponent(searchValue.value)
+
   if (searchType.value === 'all') {
-    url = `https://eps-emprendimentos.onrender.com/api/tickets/all`
+    url = `${baseUrl}/all`
   } else {
-    const encoded = encodeURIComponent(searchValue.value)
-    switch (searchType.value) {
-      case 'cliente': url = `https://eps-emprendimentos.onrender.com/api/tickets/cliente/${encoded}`; break
-      case 'empresa': url = `https://eps-emprendimentos.onrender.com/api/tickets/empresa/${encoded}`; break
-      case 'cpf': url = `https://eps-emprendimentos.onrender.com/api/tickets/cpf/${encoded}`; break
-      case 'cnpj': url = `https://eps-emprendimentos.onrender.com/api/tickets/cnpj/${encoded}`; break
-      case 'whatsapp': url = `https://eps-emprendimentos.onrender.com/api/tickets/whatsapp/${encoded}`; break
-      case 'telefone': url = `https://eps-emprendimentos.onrender.com/api/tickets/telefone/${encoded}`; break
-      case 'email': url = `https://eps-emprendimentos.onrender.com/api/tickets/email/${encoded}`; break
-      case 'nota': url = `https://eps-emprendimentos.onrender.com/api/tickets/nota/${encoded}`; break
+    const routeMap: Record<string, string> = {
+      cliente: 'cliente',
+      empresa: 'empresa',
+      cpf: 'cpf',
+      cnpj: 'cnpj',
+      whatsapp: 'whatsapp',
+      telefone: 'telefone',
+      email: 'email',
+      nota: 'nota'
     }
+
+    const endpoint = routeMap[searchType.value]
+    url = `${baseUrl}/${endpoint}/${encoded}`
   }
 
   try {
-    const token = localStorage.getItem('token')
     const response = await fetch(url, {
       headers: { Authorization: `Bearer ${token}` }
     })
+
     const result = await response.json()
 
     if (!Array.isArray(result)) {
       if (result && result.notaServico) {
         tickets.value = [result]
         notFound.value = false
-        page.value = 1
-        return
+      } else {
+        tickets.value = []
+        notFound.value = true
       }
-      tickets.value = []
-      notFound.value = true
-      return
+    } else {
+      tickets.value = result
+      notFound.value = result.length === 0
     }
 
-    tickets.value = result
     page.value = 1
-    notFound.value = result.length === 0
   } catch (err) {
     console.error('Erro ao buscar tickets:', err)
+    tickets.value = []
     notFound.value = true
   }
 }

@@ -1,31 +1,42 @@
 <template>
-  <div class="full-height d-flex flex-column align-items-center p-4">
-    <div class="gradient-overlay"></div>
+  <div class="register-page d-flex align-items-center justify-content-center vh-100 text-white">
+    <div class="card p-4 shadow-lg" style="width: 100%; max-width: 450px;">
+      <div class="w-100 mb-3" style="max-width: 600px;">
+        <RouterLink to="/dashboard" class="btn btn-primary w-100 fw-bold rounded-pill">
+          ⬅️ Voltar ao menu anterior
+        </RouterLink>
+      </div>
 
-    <div class="w-100 mb-3" style="max-width: 600px;">
-      <RouterLink to="/dashboard" class="btn btn-success w-100 fw-bold rounded-pill">
-        ⬅️ Voltar ao menu anterior
-      </RouterLink>
+      <h2 class="text-center fw-bold text-white mb-3">Editar Ticket</h2>
+
+      <form @submit.prevent="handleUpdateTicket">
+        <div class="mb-2" v-for="(label, key) in fields" :key="key">
+          <label :for="key" class="form-label text-white">{{ label }}</label>
+          <input
+            v-model="formData[key]"
+            :type="key === 'emailEmpresa' ? 'email' : 'text'"
+            class="form-control"
+            :id="key"
+            :placeholder="label"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="descricaoServico" class="form-label text-white">Descrição do Serviço</label>
+          <textarea
+            v-model="formData.descricaoServico"
+            id="descricaoServico"
+            class="form-control"
+            placeholder="Descreva o problema"
+            rows="3"
+          ></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-warning w-100 fw-semibold rounded-pill">
+          Atualizar Ticket
+        </button>
+      </form>
     </div>
-
-    <form v-if="ticket" @submit.prevent="handleSubmit" class="card p-4 w-100 shadow-sm" style="max-width: 600px;">
-      <h2 class="mb-4 text-center text-white">Editar Ticket</h2>
-
-      <p class="text-secondary mb-2"><strong>Nota de Serviço:</strong> {{ ticket.notaServico }}</p>
-
-      <input v-model="ticket.cliente" class="form-control mb-2" placeholder="Cliente" required />
-      <input v-model="ticket.empresa" class="form-control mb-2" placeholder="Empresa" required />
-      <input v-model="ticket.cpf" class="form-control mb-2" placeholder="CPF" />
-      <input v-model="ticket.cnpj" class="form-control mb-2" placeholder="CNPJ" />
-      <input v-model="ticket.whatsapp" class="form-control mb-2" placeholder="WhatsApp" />
-      <input v-model="ticket.telefone" class="form-control mb-2" placeholder="Telefone" />
-      <input v-model="ticket.emailEmpresa" class="form-control mb-2" placeholder="E-mail" />
-      <textarea v-model="ticket.descricaoServico" class="form-control mb-3" rows="3" placeholder="Descrição do serviço" required></textarea>
-
-      <button class="btn btn-success w-100">Salvar Alterações</button>
-    </form>
-
-    <p v-else class="text-white">Carregando ticket...</p>
   </div>
 </template>
 
@@ -36,70 +47,96 @@ import { useRoute, useRouter } from 'vue-router'
 const route = useRoute()
 const router = useRouter()
 const notaServico = route.params.notaServico as string
+const token = localStorage.getItem('token')
 
-const ticket = ref<any>(null)
-
-onMounted(async () => {
-  const token = localStorage.getItem('token')
-  const response = await fetch(`https://eps-emprendimentos.onrender.com/api/tickets/nota/${notaServico}`, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-  ticket.value = await response.json()
+const formData = ref<any>({
+  cliente: '',
+  empresa: '',
+  cpf: '',
+  cnpj: '',
+  telefone: '',
+  whatsapp: '',
+  emailEmpresa: '',
+  descricaoServico: '',
 })
 
-const handleSubmit = async () => {
-  const token = localStorage.getItem('token')
-  const payload = Object.fromEntries(
-    Object.entries(ticket.value).filter(([_, val]) => val !== '' && val !== null)
-  )
+const fields: Record<string, string> = {
+  cliente: 'Cliente',
+  empresa: 'Empresa',
+  cpf: 'CPF',
+  cnpj: 'CNPJ',
+  telefone: 'Telefone',
+  whatsapp: 'WhatsApp',
+  emailEmpresa: 'Email',
+}
 
-  const response = await fetch(`https://eps-emprendimentos.onrender.com/api/tickets/nota/${notaServico}`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    },
-    body: JSON.stringify(payload)
-  })
-
-  if (response.ok) {
-    alert('Ticket atualizado com sucesso!')
+const fetchTicket = async () => {
+  try {
+    const response = await fetch(`https://eps-6c85169e1d63.herokuapp.com/api/tickets/nota/${encodeURIComponent(notaServico)}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    const data = await response.json()
+    Object.assign(formData.value, data)
+  } catch (err) {
+    alert('Erro ao buscar ticket.')
     router.push('/dashboard')
-  } else {
-    const error = await response.text()
-    alert('Erro ao atualizar: ' + error)
   }
 }
+
+const handleUpdateTicket = async () => {
+  if (!token) {
+    alert('Você precisa estar logado para atualizar.')
+    router.push('/login')
+    return
+  }
+
+  const updatedFields: any = {}
+  for (const key in formData.value) {
+    if (formData.value[key]) updatedFields[key] = formData.value[key]
+  }
+
+  if (Object.keys(updatedFields).length === 0) {
+    alert('Preencha pelo menos um campo.')
+    return
+  }
+
+  try {
+    const response = await fetch(`https://eps-6c85169e1d63.herokuapp.com/api/tickets/nota/${notaServico}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(updatedFields)
+    })
+
+    if (!response.ok) {
+      const err = await response.json()
+      alert(err.message || 'Erro ao atualizar ticket.')
+      return
+    }
+
+    alert('Ticket atualizado com sucesso!')
+    router.push('/dashboard')
+  } catch (err) {
+    alert('Erro ao tentar atualizar.')
+  }
+}
+
+onMounted(() => {
+  if (!notaServico) return router.push('/dashboard')
+  fetchTicket()
+})
 </script>
 
 <style scoped>
-.full-height {
-  position: relative;
-  min-height: 100vh;
-  background-color: #0f0f1b;
-  overflow: hidden;
-  width: 100%;
+.register-page {
+  background: radial-gradient(circle at top, #00dc82 5%, #0f0f1b 50%, #000 100%);
+  padding: 1rem;
 }
-
-.gradient-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at top center, #00dc82 0%, #0f0f1b 60%, #000 100%);
-  opacity: 0.3;
-  filter: blur(120px);
-  z-index: -1;
-  pointer-events: none;
-}
-
 .card {
   background-color: #1a1a2e;
   border: none;
   border-radius: 1rem;
-  color: white;
 }
 </style>

@@ -15,7 +15,6 @@
 </template>
 
 <script setup lang="ts">
-// Nenhuma lógica JS necessária
 </script>
 
 <style scoped>

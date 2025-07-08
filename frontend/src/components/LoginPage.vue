@@ -54,7 +54,7 @@ const password = ref('')
 const showPassword = ref(false)
 
 const handleLogin = async () => {
-  const response = await fetch('https://eps-emprendimentos.onrender.com/api/auth/login', {
+  const response = await fetch('https://eps-6c85169e1d63.herokuapp.com/api/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: email.value, password: password.value })

@@ -6,7 +6,7 @@ export const swaggerDocs = {
     description: "API para registro e acompanhamento de chamados",
   },
   servers: [
-    { url: "https://eps-emprendimentos.onrender.com" },
+    { url: "https://eps-6c85169e1d63.herokuapp.com" },
     { url: "http://localhost:3000" },
   ],
   components: {
@@ -39,24 +39,23 @@ export const swaggerDocs = {
             type: "object",
             properties: {
               _id: { type: "string", example: "665f7cba1e4f230d58bfa1ee" },
-              notaServico: { type: "string", example: "NS-1721220000000" },
-              createdAt: { type: "string", format: "date-time", example: "2025-06-16 07:00" },
+              notaServico: { type: "string", example: "NS-1751907481293" },
+              createdAt: { type: "string", example: "2025-06-16 07:00" },
             },
           },
         ],
       },
-      Ticket: {
+      TicketUpdate: {
         type: "object",
         properties: {
-          notaServico: { type: "string" },
           cliente: { type: "string" },
           empresa: { type: "string" },
-          cpf: { type: "string" },
-          cnpj: { type: "string" },
-          emailEmpresa: { type: "string" },
+          descricaoServico: { type: "string" },
           telefone: { type: "string" },
           whatsapp: { type: "string" },
-          descricaoServico: { type: "string" },
+          emailEmpresa: { type: "string" },
+          cpf: { type: "string" },
+          cnpj: { type: "string" },
         },
       },
     },
@@ -92,121 +91,70 @@ export const swaggerDocs = {
         },
       },
     },
-    "/api/tickets/nota/{id}": {
-      get: {
-        tags: ["Tickets"],
-        summary: "Busca ticket pela nota de serviço",
-        parameters: [
-          { name: "id", in: "path", required: true, schema: { type: "string" } },
-        ],
-        responses: {
-          200: { description: "Ticket encontrado" },
-          404: { description: "Nota de serviço não encontrada." },
-        },
-      },
-    },
     "/api/tickets/all": {
       get: {
         tags: ["Tickets"],
         summary: "Lista todos os tickets",
         security: [{ bearerAuth: [] }],
         responses: {
-          200: { description: "Lista de tickets retornada com sucesso" },
+          200: {
+            description: "Tickets retornados com sucesso",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: { $ref: "#/components/schemas/TicketOutput" },
+                },
+              },
+            },
+          },
         },
       },
     },
-    "/api/tickets/cpf/{cpf}": {
-      get: {
+    "/api/tickets/{campo}/{valor}": {
+      put: {
         tags: ["Tickets"],
-        summary: "Buscar tickets por CPF",
-        parameters: [
-          { name: "cpf", in: "path", required: true, schema: { type: "string" } },
-        ],
-        responses: {
-          200: { description: "Lista de tickets" },
-          404: { description: "CPF não encontrado" },
-        },
-      },
-    },
-    "/api/tickets/cnpj/{cnpj}": {
-      get: {
-        tags: ["Tickets"],
-        summary: "Buscar tickets por CNPJ",
-        parameters: [
-          { name: "cnpj", in: "path", required: true, schema: { type: "string" } },
-        ],
-        responses: {
-          200: { description: "Lista de tickets" },
-          404: { description: "CNPJ não encontrado" },
-        },
-      },
-    },
-    "/api/tickets/whatsapp/{whatsapp}": {
-      get: {
-        tags: ["Tickets"],
-        summary: "Buscar tickets por WhatsApp",
-        parameters: [
-          { name: "whatsapp", in: "path", required: true, schema: { type: "string" } },
-        ],
-        responses: {
-          200: { description: "Lista de tickets" },
-          404: { description: "WhatsApp não encontrado" },
-        },
-      },
-    },
-    "/api/tickets/telefone/{telefone}": {
-      get: {
-        tags: ["Tickets"],
-        summary: "Buscar tickets por telefone",
-        parameters: [
-          { name: "telefone", in: "path", required: true, schema: { type: "string" } },
-        ],
-        responses: {
-          200: { description: "Lista de tickets" },
-          404: { description: "Telefone não encontrado" },
-        },
-      },
-    },
-    "/api/tickets/email/{email}": {
-      get: {
-        tags: ["Tickets"],
-        summary: "Buscar tickets por email da empresa",
-        parameters: [
-          { name: "email", in: "path", required: true, schema: { type: "string" } },
-        ],
-        responses: {
-          200: { description: "Lista de tickets" },
-          404: { description: "Email não encontrado" },
-        },
-      },
-    },
-    "/api/tickets/empresa/{empresa}": {
-      get: {
-        tags: ["Tickets"],
-        summary: "Buscar tickets por empresa",
-        parameters: [
-          { name: "empresa", in: "path", required: true, schema: { type: "string" } },
-        ],
-        responses: {
-          200: { description: "Lista de tickets encontrados" },
-          404: { description: "Empresa não encontrada no registro." },
-        },
-      },
-    },
-    "/api/tickets/cliente/{cliente}": {
-      get: {
-        tags: ["Tickets"],
-        summary: "Busca tickets por nome do cliente",
+        summary: "Atualiza ticket por campo (total)",
         security: [{ bearerAuth: [] }],
         parameters: [
-          { name: "cliente", in: "path", required: true, schema: { type: "string" } },
+          { name: "campo", in: "path", required: true, schema: { type: "string" } },
+          { name: "valor", in: "path", required: true, schema: { type: "string" } }
         ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/TicketUpdate" },
+            },
+          },
+        },
         responses: {
-          200: { description: "Lista de tickets" },
+          200: { description: "Ticket atualizado com sucesso" },
+          404: { description: "Ticket não encontrado" },
+        },
+      },
+      patch: {
+        tags: ["Tickets"],
+        summary: "Atualiza ticket por campo (parcial)",
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          { name: "campo", in: "path", required: true, schema: { type: "string" } },
+          { name: "valor", in: "path", required: true, schema: { type: "string" } }
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/TicketUpdate" },
+            },
+          },
+        },
+        responses: {
+          200: { description: "Ticket atualizado parcialmente com sucesso" },
+          404: { description: "Ticket não encontrado" },
         },
       },
     },
-  },
     "/api/auth/login": {
       post: {
         tags: ["Autenticação"],
@@ -227,7 +175,7 @@ export const swaggerDocs = {
         },
         responses: {
           200: {
-            description: "Login realizado com sucesso",
+            description: "Token JWT retornado",
             content: {
               "application/json": {
                 schema: {
@@ -245,7 +193,7 @@ export const swaggerDocs = {
     "/api/auth/register": {
       post: {
         tags: ["Autenticação"],
-        summary: "Registra um novo funcionário (somente admin)",
+        summary: "Registro de novo usuário (apenas admin)",
         security: [{ bearerAuth: [] }],
         requestBody: {
           required: true,
@@ -253,78 +201,20 @@ export const swaggerDocs = {
             "application/json": {
               schema: {
                 type: "object",
-                required: ["name", "email", "password", "role"],
+                required: ["email", "password"],
                 properties: {
-                  name: { type: "string", example: "Novo Funcionário" },
-                  email: { type: "string", example: "novo@eps.com" },
+                  email: { type: "string", example: "funcionario@eps.com" },
                   password: { type: "string", example: "123456" },
-                  role: {
-                    type: "string",
-                    enum: ["admin", "employee"],
-                    example: "employee",
-                  },
                 },
               },
             },
           },
         },
         responses: {
-          201: { description: "Funcionário registrado com sucesso" },
-          403: { description: "Acesso negado (apenas admin)" },
+          201: { description: "Usuário registrado com sucesso" },
+          403: { description: "Apenas administradores podem registrar usuários" },
         },
       },
     },
-    "/api/auth/forgot-password": {
-      post: {
-        tags: ["Autenticação"],
-        summary: "Solicita link de recuperação de senha",
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: {
-                type: "object",
-                required: ["email"],
-                properties: {
-                  email: { type: "string", example: "usuario@eps.com" },
-                },
-              },
-            },
-          },
-        },
-        responses: {
-          200: { description: "Link de redefinição enviado com sucesso" },
-          404: { description: "E-mail não encontrado" },
-        },
-      },
-    },
-    "/api/auth/reset-password": {
-      post: {
-        tags: ["Autenticação"],
-        summary: "Redefine a senha com token",
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: {
-                type: "object",
-                required: ["token", "newPassword"],
-                properties: {
-                  token: {
-                    type: "string",
-                    example: "jwt-token-recebido-por-email",
-                  },
-                  newPassword: { type: "string", example: "novaSenha123" },
-                },
-              },
-            },
-          },
-        },
-        responses: {
-          200: { description: "Senha redefinida com sucesso" },
-          400: { description: "Token inválido ou expirado" },
-        },
-      },
-    }
-  }
+  },
 };

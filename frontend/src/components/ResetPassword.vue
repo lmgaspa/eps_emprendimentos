@@ -58,7 +58,7 @@ const submit = async () => {
   error.value = ''
 
   try {
-    const response = await fetch('https://eps-emprendimentos.onrender.com/api/auth/reset-password', {
+    const response = await fetch('https://eps-6c85169e1d63.herokuapp.com/api/auth/reset-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

@@ -41,7 +41,7 @@ onMounted(async () => {
   if (!token) return router.push('/login')
 
   try {
-    const response = await fetch('https://eps-emprendimentos.onrender.com/api/auth/profile', {
+    const response = await fetch('https://eps-6c85169e1d63.herokuapp.com/api/auth/profile', {
       headers: { Authorization: `Bearer ${token}` }
     })
 

@@ -1,10 +1,6 @@
 import { Router } from 'express';
 import {
-  createTicket,
-  getTicketById,
-  getTicketsByCliente,
-  getTicketByNota,
-  getAllTickets
+  createTicket
 } from '../controllers/ticket.controller';
 import {
   getTicketsByCpf,
@@ -12,59 +8,61 @@ import {
   getTicketsByWhatsapp,
   getTicketsByTelefone,
   getTicketsByEmail,
-  getTicketsByEmpresa
-} from '../controllers/ticketSearchController'
+  getTicketsByEmpresa,
+  getTicketsByCliente,
+  getTicketByNota,
+  getAllTickets
+} from '../controllers/ticket.search.controller';
+import { patchTicketByNotaServico, putTicketByNotaServico } from '../controllers/ticket.update.controller'
 import { verifyToken } from '../middlewares/auth.middleware';
-import Ticket from '../models/Ticket'
+import Ticket from '../models/Ticket';
 
 const router = Router();
 
-// Criação de ticket (qualquer funcionário)
+// Criação de ticket (protegida)
 router.post('/', verifyToken, createTicket);
 
-router.get('/tickets/cpf/:cpf', getTicketsByCpf);
-router.get('/tickets/cnpj/:cnpj', getTicketsByCnpj);
-router.get('/tickets/email/:email', getTicketsByEmail);
-router.get('/tickets/telefone/:telefone', getTicketsByTelefone);
-router.get('/tickets/whatsapp/:whatsapp', getTicketsByWhatsapp);
-router.get('/tickets/empresa/:empresa', getTicketsByEmpresa);
-
-// Buscar todos (protegido)
+// Leitura de tickets (protegidas)
 router.get('/all', verifyToken, getAllTickets);
+router.get('/cpf/:cpf', verifyToken, getTicketsByCpf);
+router.get('/cnpj/:cnpj', verifyToken, getTicketsByCnpj);
+router.get('/email/:email', verifyToken, getTicketsByEmail);
+router.get('/telefone/:telefone', verifyToken, getTicketsByTelefone);
+router.get('/whatsapp/:whatsapp', verifyToken, getTicketsByWhatsapp);
+router.get('/empresa/:empresa', verifyToken, getTicketsByEmpresa);
+router.get('/cliente/:cliente', verifyToken, getTicketsByCliente);
+router.get('/nota/:notaServico', verifyToken, getTicketByNota);
+router.patch('/nota/:notaServico', verifyToken, patchTicketByNotaServico);
+router.put('/nota/:notaServico', verifyToken, putTicketByNotaServico)
 
-router.get('/cpf/:cpf', getTicketsByCpf);
-router.get('/cnpj/:cnpj', getTicketsByCnpj);
-router.get('/email/:email', getTicketsByEmail);
-router.get('/telefone/:telefone', getTicketsByTelefone);
-router.get('/whatsapp/:whatsapp', getTicketsByWhatsapp);
-router.get('/empresa/:empresa', getTicketsByEmpresa);
-router.get('/tickets/nota/:id', getTicketByNota)
-router.get('/cliente/:cliente', getTicketsByCliente);
-
-const camposPermitidos = ['cliente', 'id', 'cpf', 'cnpj', 'whatsapp', 'telefone', 'emailEmpresa', 'notaServico']
+// Atualização de tickets por qualquer campo permitido (protegida)
+const camposPermitidos = ['cliente', 'id', 'cpf', 'cnpj', 'whatsapp', 'telefone', 'emailEmpresa', 'notaServico'];
 
 camposPermitidos.forEach((campo) => {
-  router.put(`/${campo}/:valor`, async (req, res) => {
-    try {
-      const filtro = campo === 'id' ? { _id: req.params.valor } : { [campo]: req.params.valor }
-      const ticket = await Ticket.findOneAndUpdate(filtro, { $set: req.body }, { new: true })
-      if (!ticket) return res.status(404).json({ erro: 'Ticket não encontrado' })
-      res.json(ticket)
-    } catch (err) {
-      res.status(500).json({ erro: `Erro ao atualizar ticket por ${campo}` })
-    }
-  })
+  const basePath = `/${campo}/:valor`;
 
-  router.patch(`/${campo}/:valor`, async (req, res) => {
+  router.put(basePath, verifyToken, async (req, res) => {
     try {
-      const filtro = campo === 'id' ? { _id: req.params.valor } : { [campo]: req.params.valor }
-      const ticket = await Ticket.findOneAndUpdate(filtro, { $set: req.body }, { new: true })
-      if (!ticket) return res.status(404).json({ erro: 'Ticket não encontrado' })
-      res.json(ticket)
+      const filtro = campo === 'id' ? { _id: req.params.valor } : { [campo]: req.params.valor };
+      const ticket = await Ticket.findOneAndUpdate(filtro, { $set: req.body }, { new: true });
+      if (!ticket) return res.status(404).json({ erro: 'Ticket não encontrado' });
+      res.json(ticket);
     } catch (err) {
-      res.status(500).json({ erro: `Erro ao atualizar parcialmente por ${campo}` })
+      res.status(500).json({ erro: `Erro ao atualizar ticket por ${campo}` });
     }
-  })
-})
+  });
+
+  router.patch(basePath, verifyToken, async (req, res) => {
+    try {
+      const filtro = campo === 'id' ? { _id: req.params.valor } : { [campo]: req.params.valor };
+      const ticket = await Ticket.findOneAndUpdate(filtro, { $set: req.body }, { new: true });
+      if (!ticket) return res.status(404).json({ erro: 'Ticket não encontrado' });
+      res.json(ticket);
+    } catch (err) {
+      res.status(500).json({ erro: `Erro ao atualizar parcialmente por ${campo}` });
+    }
+  });
+});
+
 
 export default router;
