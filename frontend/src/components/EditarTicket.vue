@@ -18,6 +18,12 @@
             class="form-control"
             :id="key"
             :placeholder="label"
+            @input="
+              key === 'cpf' ? onCpfInput() :
+              key === 'cnpj' ? onCnpjInput() :
+              key === 'telefone' ? onTelefoneInput() :
+              key === 'whatsapp' ? onWhatsappInput() : null
+            "
           />
         </div>
 
@@ -68,6 +74,34 @@ const fields: Record<string, string> = {
   telefone: 'Telefone',
   whatsapp: 'WhatsApp',
   emailEmpresa: 'Email',
+}
+
+const onCpfInput = () => {
+  formData.value.cpf = formData.value.cpf
+    .replace(/\D/g, '')
+    .replace(/(\d{3})(\d{3})(\d{3})(\d{0,2})/, '$1.$2.$3-$4')
+    .slice(0, 14)
+}
+
+const onCnpjInput = () => {
+  formData.value.cnpj = formData.value.cnpj
+    .replace(/\D/g, '')
+    .replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{0,2})/, '$1.$2.$3/$4-$5')
+    .slice(0, 18)
+}
+
+const onTelefoneInput = () => {
+  formData.value.telefone = formData.value.telefone
+    .replace(/\D/g, '')
+    .replace(/(\d{2})(\d{4})(\d{0,4})/, '($1)$2-$3')
+    .slice(0, 13)
+}
+
+const onWhatsappInput = () => {
+  formData.value.whatsapp = formData.value.whatsapp
+    .replace(/\D/g, '')
+    .replace(/(\d{2})(\d{5})(\d{4})/, '($1)$2-$3')
+    .slice(0, 14)
 }
 
 const fetchTicket = async () => {
