@@ -150,7 +150,7 @@ const handleUpdateTicket = async () => {
       return
     }
 
-    alert('Ticket atualizado com sucesso!')
+    alert('Nota de Serviço atualizada com sucesso!')
     router.push('/dashboard')
   } catch (err) {
     alert('Erro ao tentar atualizar.')
