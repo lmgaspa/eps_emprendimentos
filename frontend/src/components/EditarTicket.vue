@@ -7,7 +7,7 @@
         </RouterLink>
       </div>
 
-      <h2 class="text-center fw-bold text-white mb-3">Editar Ticket</h2>
+      <h2 class="text-center fw-bold text-white mb-3">Editar Nota de Serviço</h2>
 
       <form @submit.prevent="handleUpdateTicket">
         <div class="mb-2" v-for="(label, key) in fields" :key="key">

@@ -23,3 +23,5 @@ export const sendWhatsappMessage = async (to: string, body: string): Promise<voi
     console.error("❌ Erro ao enviar mensagem via WhatsApp:", err);
   }
 };
+
+//
