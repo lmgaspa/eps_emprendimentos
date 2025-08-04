@@ -44,13 +44,21 @@ export const getTicketsByCnpj = async (req: Request, res: Response, next: NextFu
   }
 };
 
+const normalizePhoneNumber = (number: string) => number.replace(/\D/g, '');
+
 export const getTicketsByWhatsapp = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const whatsapp = req.params.whatsapp?.trim();
-    const tickets = await Ticket.find({ whatsapp: new RegExp(`^${whatsapp}$`, 'i') });
-    if (!tickets.length)
+    const whatsapp = normalizePhoneNumber(req.params.whatsapp);
+    const tickets = await Ticket.find({ 
+      whatsapp: normalizePhoneNumber(req.params.whatsapp) 
+    });
+
+    const foundTickets = tickets.filter(ticket => normalizePhoneNumber(ticket.whatsapp) === whatsapp);
+
+    if (!foundTickets.length)
       return res.status(404).json({ message: 'WhatsApp não encontrado no registro.' });
-    res.json(tickets.map(formatResult));
+
+    res.json(foundTickets.map(formatResult));
   } catch (err) {
     next(err);
   }
@@ -58,11 +66,17 @@ export const getTicketsByWhatsapp = async (req: Request, res: Response, next: Ne
 
 export const getTicketsByTelefone = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const telefone = req.params.telefone?.trim();
-    const tickets = await Ticket.find({ telefone: new RegExp(`^${telefone}$`, 'i') });
-    if (!tickets.length)
+    const telefone = normalizePhoneNumber(req.params.telefone);
+    const tickets = await Ticket.find({ 
+      telefone: normalizePhoneNumber(req.params.telefone) 
+    });
+
+    const foundTickets = tickets.filter(ticket => normalizePhoneNumber(ticket.telefone) === telefone);
+
+    if (!foundTickets.length)
       return res.status(404).json({ message: 'Telefone não encontrado no registro.' });
-    res.json(tickets.map(formatResult));
+
+    res.json(foundTickets.map(formatResult));
   } catch (err) {
     next(err);
   }
