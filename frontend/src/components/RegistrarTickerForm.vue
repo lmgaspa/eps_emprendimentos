@@ -32,7 +32,7 @@
     </div>
 
     <form v-if="startStep === 3" @submit.prevent="handleSubmit" class="p-4 border rounded bg-white shadow-sm w-100 mt-3" style="max-width: 600px;">
-      <h2 class="mb-4 text-center text-primary">Cadastro de Chamado</h2>
+      <h2 class="mb-4 text-center text-primary">Cadastro de Nota de Serviço</h2>
 
       <div v-if="selectedCpfCnpj === 'cpf'" class="form-group mb-3">
         <label for="cpf" class="form-label">CPF</label>
