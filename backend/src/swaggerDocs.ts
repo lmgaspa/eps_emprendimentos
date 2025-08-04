@@ -7,7 +7,7 @@ export const swaggerDocs = {
   },
   servers: [
     { url: "https://eps-6c85169e1d63.herokuapp.com" },
-    { url: "http://localhost:3000" },
+    { url: "https://eps-emprendimentos.vercel.app" },
   ],
   components: {
     securitySchemes: {
