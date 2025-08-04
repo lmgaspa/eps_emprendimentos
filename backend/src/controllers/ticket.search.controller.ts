@@ -48,19 +48,24 @@ const normalizePhoneNumber = (number: string): string => number.replace(/\D/g, '
 
 export const getTicketsByWhatsapp = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!req.params.whatsapp) {
+    const rawParam = req.params.whatsapp;
+    if (!rawParam) {
       return res.status(400).json({ message: 'WhatsApp não fornecido.' });
     }
 
-    const whatsapp = normalizePhoneNumber(req.params.whatsapp as string);
+    const whatsapp = normalizePhoneNumber(rawParam);
+
     const tickets = await Ticket.find();
 
     const foundTickets = tickets.filter(
-      ticket => ticket.whatsapp && normalizePhoneNumber(ticket.whatsapp) === whatsapp
+      ticket =>
+        ticket.whatsapp &&
+        normalizePhoneNumber(ticket.whatsapp) === whatsapp
     );
 
-    if (!foundTickets.length)
+    if (!foundTickets.length) {
       return res.status(404).json({ message: 'WhatsApp não encontrado no registro.' });
+    }
 
     res.json(foundTickets.map(formatResult));
   } catch (err) {
@@ -70,19 +75,24 @@ export const getTicketsByWhatsapp = async (req: Request, res: Response, next: Ne
 
 export const getTicketsByTelefone = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (!req.params.telefone) {
+    const rawParam = req.params.telefone;
+    if (!rawParam) {
       return res.status(400).json({ message: 'Telefone não fornecido.' });
     }
 
-    const telefone = normalizePhoneNumber(req.params.telefone as string);
+    const telefone = normalizePhoneNumber(rawParam);
+
     const tickets = await Ticket.find();
 
     const foundTickets = tickets.filter(
-      ticket => ticket.telefone && normalizePhoneNumber(ticket.telefone) === telefone
+      ticket =>
+        ticket.telefone &&
+        normalizePhoneNumber(ticket.telefone) === telefone
     );
 
-    if (!foundTickets.length)
+    if (!foundTickets.length) {
       return res.status(404).json({ message: 'Telefone não encontrado no registro.' });
+    }
 
     res.json(foundTickets.map(formatResult));
   } catch (err) {
