@@ -4,7 +4,7 @@
 
     <div class="content position-relative z-1 text-center">
       <h1 class="display-4 fw-bold mb-3">Bem-vindo, {{ userName }}</h1>
-      <p class="lead mb-4">Gerencie seus chamados técnicos com facilidade.</p>
+      <p class="lead mb-4">Gerencie suas notas de serviço com facilidade.</p>
 
       <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
         <button @click="goToBuscarNota" class="btn btn-info fw-semibold px-4 rounded-pill">
