@@ -48,7 +48,7 @@ export const createTicket = async (
 
     // Mensagem unificada (usada para email e WhatsApp)
     const mensagem = `
-      <p>Sua nota de serviço foi registrada com sucesso com os seguintes detalhes:</p>
+      <p>EPS - EMPRENDIMENTO - Sua nota de serviço foi registrada com sucesso com os seguintes detalhes:</p>
       <ul>
         <li><strong>Cliente:</strong> ${cliente}</li>
         <li><strong>Empresa:</strong> ${empresa}</li>
@@ -73,7 +73,7 @@ export const createTicket = async (
     // Envia o WhatsApp (mensagem convertida para texto plano)
     if (whatsapp) {
       const mensagemWhatsapp = `
-Sua nota de serviço foi registrada com sucesso com os seguintes detalhes:
+EPS - EMPRENDIMENTO - Sua nota de serviço foi registrada com sucesso com os seguintes detalhes:
 
 • Cliente: ${cliente}
 • Empresa: ${empresa}
