@@ -4,7 +4,7 @@
 
     <div class="content position-relative z-1">
       <h1 class="display-4 fw-bold mb-3">EPS Empreendimentos</h1>
-      <p class="lead mb-4">Sistema moderno de chamados técnicos. Faça login para acessar sua conta.</p>
+      <p class="lead mb-4">Sistema moderno de criação e gerenciamento de notas de serviço. Faça login para acessar sua conta.</p>
       <div class="d-flex justify-content-center">
         <button @click="goToLogin" class="btn btn-success px-4 py-2 fw-semibold rounded-pill">Entrar no sistema</button>
       </div>
