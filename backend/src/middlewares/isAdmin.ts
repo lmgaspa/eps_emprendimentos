@@ -1,11 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 
-export const isAdmin = (req: Request, res: Response, next: NextFunction): void => {
-  if (typeof req.user === 'object' && req.user !== null && 'role' in req.user) {
-    if ((req.user as any).role === 'admin') {
-      return next();
-    }
+export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
+  if (req.user?.role !== 'admin') {
+    return res.status(403).json({ message: 'Somente admin pode registrar funcionário.' });
   }
-
-  res.status(403).json({ message: 'Acesso negado: apenas administradores' });
+  next();
 };

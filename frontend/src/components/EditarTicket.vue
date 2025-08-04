@@ -39,7 +39,7 @@
         </div>
 
         <button type="submit" class="btn btn-warning w-100 fw-semibold rounded-pill">
-          Atualizar Ticket
+          Atualizar Nota de Serviço
         </button>
       </form>
     </div>

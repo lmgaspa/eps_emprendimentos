@@ -12,7 +12,7 @@ export const register = async (
   try {
     const { name, email, password, role } = req.body;
 
-    if (role !== 'employee') {
+    if (role !== 'funcionário') {
       res.status(403).json({ message: 'Somente admin pode registrar funcionário.' });
       return;
     }

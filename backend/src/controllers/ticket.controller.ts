@@ -66,7 +66,7 @@ export const createTicket = async (
 
     // Envia o e-mail
     if (emailEmpresa) {
-      const assunto = `Confirmação do Ticket - ${notaServico}`;
+      const assunto = `Confirmação da Nota de Serviço - ${notaServico}`;
       await sendTicketEmail(emailEmpresa, assunto, mensagem);
     }
 

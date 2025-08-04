@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
+// Estende o Request para tipar corretamente o `user`
 declare module 'express-serve-static-core' {
   interface Request {
-    user?: JwtPayload | string;
+    user?: JwtPayload; // melhor usar apenas JwtPayload
   }
 }
 
