@@ -80,7 +80,7 @@
       </div>
 
       <button type="submit" class="btn btn-primary btn-lg w-100 custom-btn hover-green" :disabled="!formValidation()">
-        Enviar Chamado
+        Criar Nota de Serviço
       </button>
     </form>
   </div>
@@ -163,7 +163,7 @@ export default defineComponent({
 
   const token = localStorage.getItem('token');
   if (!token) {
-    alert('Você precisa estar logado para abrir um chamado.');
+    alert('Você precisa estar logado para criar uma nota de serviço.');
     return;
   }
 
