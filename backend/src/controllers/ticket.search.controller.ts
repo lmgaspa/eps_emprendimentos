@@ -44,14 +44,20 @@ export const getTicketsByCnpj = async (req: Request, res: Response, next: NextFu
   }
 };
 
-const normalizePhoneNumber = (number: string) => number.replace(/\D/g, '');
+const normalizePhoneNumber = (number: string): string => number.replace(/\D/g, '');
 
 export const getTicketsByWhatsapp = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const whatsapp = normalizePhoneNumber(req.params.whatsapp || '');
+    if (!req.params.whatsapp) {
+      return res.status(400).json({ message: 'WhatsApp não fornecido.' });
+    }
+
+    const whatsapp = normalizePhoneNumber(req.params.whatsapp as string);
     const tickets = await Ticket.find();
 
-    const foundTickets = tickets.filter(ticket => normalizePhoneNumber(ticket.whatsapp) === whatsapp);
+    const foundTickets = tickets.filter(
+      ticket => ticket.whatsapp && normalizePhoneNumber(ticket.whatsapp) === whatsapp
+    );
 
     if (!foundTickets.length)
       return res.status(404).json({ message: 'WhatsApp não encontrado no registro.' });
@@ -64,10 +70,16 @@ export const getTicketsByWhatsapp = async (req: Request, res: Response, next: Ne
 
 export const getTicketsByTelefone = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const telefone = normalizePhoneNumber(req.params.telefone || '');
+    if (!req.params.telefone) {
+      return res.status(400).json({ message: 'Telefone não fornecido.' });
+    }
+
+    const telefone = normalizePhoneNumber(req.params.telefone as string);
     const tickets = await Ticket.find();
 
-    const foundTickets = tickets.filter(ticket => normalizePhoneNumber(ticket.telefone) === telefone);
+    const foundTickets = tickets.filter(
+      ticket => ticket.telefone && normalizePhoneNumber(ticket.telefone) === telefone
+    );
 
     if (!foundTickets.length)
       return res.status(404).json({ message: 'Telefone não encontrado no registro.' });
