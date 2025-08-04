@@ -19,5 +19,3 @@ export async function sendTicketEmail(to: string, subject: string, html: string)
     html,
   })
 }
-
-//
