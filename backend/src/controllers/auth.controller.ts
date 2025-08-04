@@ -26,7 +26,7 @@ export const register = async (
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({ name, email, password: hashedPassword, role });
 
-const html = `
+    const html = `
       <p><strong>EPS EMPREENDIMENTOS</strong></p>
       <p>Olá <strong>Tom Passinho</strong>,</p>
       <p>O funcionário <strong>${newUser.name}</strong> foi criado com sucesso.</p>
@@ -34,9 +34,9 @@ const html = `
       <p><strong>Função:</strong> ${newUser.role}</p>
     `;
 
-    if (process.env.EMAIL_FROM) {
+    if (process.env.EMAIL_TO) {
       await sendTicketEmail(
-        process.env.EMAIL_FROM,
+        process.env.EMAIL_TO,
         'EPS EMPREENDIMENTOS - Funcionário criado com sucesso',
         html
       );

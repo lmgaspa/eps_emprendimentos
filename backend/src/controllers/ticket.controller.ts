@@ -50,9 +50,8 @@ export const createTicket = async (
       { locale: ptBR }
     );
 
-    // Mensagem unificada (usada para email e WhatsApp)
     const mensagem = `
-      <p><strong>EPS - EMPRENDIMENTOS</strong> - Sua nota de serviço foi registrada com sucesso com os seguintes detalhes:</p>
+      <p><strong>EPS - EMPREENDIMENTOS</strong> - Sua nota de serviço foi registrada com sucesso com os seguintes detalhes:</p>
       <ul>
         <li><strong>Cliente:</strong> ${cliente}</li>
         <li><strong>Empresa:</strong> ${empresa}</li>
@@ -68,16 +67,22 @@ export const createTicket = async (
       <p>Responderemos em breve!</p>
     `;
 
-    // Envia o e-mail
+    // Envia e-mail para o cliente
     if (emailEmpresa) {
       const assunto = `Confirmação da Criação da Nota de Serviço - ${notaServico}`;
       await sendTicketEmail(emailEmpresa, assunto, mensagem);
     }
 
-    // Envia o WhatsApp (mensagem convertida para texto plano)
+    // Envia e-mail para o administrador (EMAIL_TO)
+    if (process.env.EMAIL_TO) {
+      const assuntoAdmin = `Nova Nota de Serviço Criada - ${notaServico}`;
+      await sendTicketEmail(process.env.EMAIL_TO, assuntoAdmin, mensagem);
+    }
+
+    // Envia WhatsApp
     if (whatsapp) {
       const mensagemWhatsapp = `
-EPS - EMPRENDIMENTOS - Sua nota de serviço foi registrada com sucesso com os seguintes detalhes:
+EPS - EMPREENDIMENTOS - Sua nota de serviço foi registrada com sucesso com os seguintes detalhes:
 
 • Cliente: ${cliente}
 • Empresa: ${empresa}

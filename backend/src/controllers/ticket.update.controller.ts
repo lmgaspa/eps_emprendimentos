@@ -75,6 +75,7 @@ export const patchTicketByNotaServico = async (req: Request, res: Response): Pro
     if (req.body.descricaoServico || req.body.status || req.body.cliente) {
       const { email, whatsapp } = generateFormattedMessage(updatedTicket);
 
+      // Email para cliente
       if (updatedTicket.emailEmpresa) {
         await sendTicketEmail(
           updatedTicket.emailEmpresa,
@@ -83,6 +84,16 @@ export const patchTicketByNotaServico = async (req: Request, res: Response): Pro
         );
       }
 
+      // Email para o administrador
+      if (process.env.EMAIL_TO) {
+        await sendTicketEmail(
+          process.env.EMAIL_TO,
+          `⚠️ Atualização da Nota de Serviço - ${updatedTicket.notaServico}`,
+          email
+        );
+      }
+
+      // WhatsApp
       if (updatedTicket.whatsapp) {
         await sendWhatsappMessage(updatedTicket.whatsapp, whatsapp);
       }
@@ -102,7 +113,7 @@ export const putTicketByNotaServico = async (req: Request, res: Response): Promi
   try {
     const updatedTicket = await Ticket.findOneAndUpdate(
       { notaServico },
-      req.body, // substitui por completo os dados
+      req.body,
       { new: true }
     );
 
@@ -113,6 +124,7 @@ export const putTicketByNotaServico = async (req: Request, res: Response): Promi
 
     const { email, whatsapp } = generateFormattedMessage(updatedTicket);
 
+    // Email para cliente
     if (updatedTicket.emailEmpresa) {
       await sendTicketEmail(
         updatedTicket.emailEmpresa,
@@ -121,6 +133,16 @@ export const putTicketByNotaServico = async (req: Request, res: Response): Promi
       );
     }
 
+    // Email para o administrador
+    if (process.env.EMAIL_TO) {
+      await sendTicketEmail(
+        process.env.EMAIL_TO,
+        `⚠️ Atualização do Ticket - ${updatedTicket.notaServico}`,
+        email
+      );
+    }
+
+    // WhatsApp
     if (updatedTicket.whatsapp) {
       await sendWhatsappMessage(updatedTicket.whatsapp, whatsapp);
     }
