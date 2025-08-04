@@ -48,10 +48,8 @@ const normalizePhoneNumber = (number: string) => number.replace(/\D/g, '');
 
 export const getTicketsByWhatsapp = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const whatsapp = normalizePhoneNumber(req.params.whatsapp);
-    const tickets = await Ticket.find({ 
-      whatsapp: normalizePhoneNumber(req.params.whatsapp) 
-    });
+    const whatsapp = normalizePhoneNumber(req.params.whatsapp || '');
+    const tickets = await Ticket.find();
 
     const foundTickets = tickets.filter(ticket => normalizePhoneNumber(ticket.whatsapp) === whatsapp);
 
@@ -66,10 +64,8 @@ export const getTicketsByWhatsapp = async (req: Request, res: Response, next: Ne
 
 export const getTicketsByTelefone = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const telefone = normalizePhoneNumber(req.params.telefone);
-    const tickets = await Ticket.find({ 
-      telefone: normalizePhoneNumber(req.params.telefone) 
-    });
+    const telefone = normalizePhoneNumber(req.params.telefone || '');
+    const tickets = await Ticket.find();
 
     const foundTickets = tickets.filter(ticket => normalizePhoneNumber(ticket.telefone) === telefone);
 
