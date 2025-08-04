@@ -27,7 +27,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
     from: process.env.EMAIL_FROM,
     to: email,
     subject: 'Redefinição de senha',
-    html: `<p>Clique no link para redefinir sua senha:</p><a href="${resetLink}">${resetLink}</a>`
+    html: `<p>EPS EMPRENDIMENTOS - Clique no link para redefinir sua senha:</p><a href="${resetLink}">${resetLink}</a>`
   })
 
   return res.json({ message: 'Link de redefinição enviado para o e-mail.' })
