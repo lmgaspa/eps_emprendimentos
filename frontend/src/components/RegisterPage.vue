@@ -54,7 +54,7 @@
         </div>
 
         <button type="submit" class="btn btn-success w-100 fw-semibold rounded-pill">
-          Registrar
+          Registrar Funcionário
         </button>
       </form>
     </div>
@@ -100,7 +100,7 @@ const handleRegister = async () => {
   try {
     const payload = JSON.parse(atob(token.split('.')[1]))
     if (payload.role !== 'admin') {
-      alert('Apenas administradores podem registrar novos usuários.')
+      alert('Apenas administradores podem registrar novos funcionários.')
       return
     }
 
@@ -120,15 +120,15 @@ const handleRegister = async () => {
 
     if (!response.ok) {
       const err = await response.json()
-      alert(err.message || 'Erro ao registrar usuário.')
+      alert(err.message || 'Erro ao registrar funcionário.')
       return
     }
 
-    alert('Usuário registrado com sucesso!')
+    alert('funcionário registrado com sucesso!')
     router.push('/dashboard')
   } catch (error) {
     console.error(error)
-    alert('Erro ao tentar registrar usuário.')
+    alert('Erro ao tentar registrar funcionário.')
   }
 }
 </script>
