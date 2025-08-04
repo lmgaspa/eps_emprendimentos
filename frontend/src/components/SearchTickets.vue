@@ -9,7 +9,7 @@
     </div>
 
     <div class="card p-4 w-100" style="max-width: 600px;">
-      <h2 class="mb-4 text-center text-white">Buscar Ticket</h2>
+      <h2 class="mb-4 text-center text-white">Buscar Nota de Serviço</h2>
 
       <div class="form-group mb-3">
         <label class="form-label text-white">Buscar por:</label>
@@ -23,7 +23,7 @@
           <option value="telefone">Telefone</option>
           <option value="email">E-mail</option>
           <option value="nota">Nota de Serviço</option>
-          <option value="all">Todos os Tickets</option>
+          <option value="all">Todos as Notas de Serviço</option>
         </select>
       </div>
 
