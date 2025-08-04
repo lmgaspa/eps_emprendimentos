@@ -12,7 +12,7 @@ const generateFormattedMessage = (ticket: any): { email: string; whatsapp: strin
   const formattedDate = format(new Date(), 'dd/MM/yyyy HH:mm', { locale: ptBR });
 
   const emailHtml = `
-    <p>EPS - EMPRENDIMENTO - Sua nota de serviço foi atualizada com os seguintes dados:</p>
+    <p><strong>EPS - EMPRENDIMENTOS</strong> - Sua nota de serviço foi atualizada com os seguintes dados:</p>
     <ul>
       <li><strong>Cliente:</strong> ${ticket.cliente}</li>
       <li><strong>Empresa:</strong> ${ticket.empresa}</li>
@@ -29,7 +29,7 @@ const generateFormattedMessage = (ticket: any): { email: string; whatsapp: strin
   `;
 
   const whatsappText = `
-EPS - EMPRENDIMENTO - Sua nota de serviço foi atualizada com os seguintes dados:
+EPS - EMPRENDIMENTOS - Sua nota de serviço foi atualizada com os seguintes dados:
 
 • Cliente: ${ticket.cliente}
 • Empresa: ${ticket.empresa}

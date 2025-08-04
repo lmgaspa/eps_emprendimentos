@@ -26,8 +26,8 @@ export const forgotPassword = async (req: Request, res: Response) => {
   await transporter.sendMail({
     from: process.env.EMAIL_FROM,
     to: email,
-    subject: 'Redefinição de senha',
-    html: `<p>EPS EMPRENDIMENTOS - Clique no link para redefinir sua senha:</p><a href="${resetLink}">${resetLink}</a>`
+    subject: 'EPS EMPRENDIMENTOS - Redefinição de senha',
+    html: `<p><strong>EPS EMPRENDIMENTOS</strong> - Clique no link para redefinir sua senha:</p><a href="${resetLink}">${resetLink}</a>`
   })
 
   return res.json({ message: 'Link de redefinição enviado para o e-mail.' })
