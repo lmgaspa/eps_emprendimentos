@@ -178,15 +178,15 @@ export default defineComponent({
     });
 
     if (response.ok) {
-      alert('Chamado enviado com sucesso!');
+      alert('Nota de serviço criada com sucesso!');
       startStep.value = 0;
     } else {
       const error = await response.json();
-      alert(error.message || 'Erro ao enviar chamado.');
+      alert(error.message || 'Erro ao criar nota de serviço.');
     }
   } catch (error) {
-    console.error('Erro ao enviar:', error);
-    alert('Erro ao enviar chamado.');
+    console.error('Erro ao criar nota de serviço:', error);
+    alert('Erro ao enviar nota de serviço.');
   }
 };
     return {
