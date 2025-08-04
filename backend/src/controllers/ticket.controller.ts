@@ -4,6 +4,7 @@ import { ptBR } from "date-fns/locale";
 import Ticket from "../models/Ticket";
 import { sendTicketEmail } from "../utils/emailService";
 import { sendWhatsappMessage } from "../utils/whatsappService";
+import { toZonedTime } from "date-fns-tz";
 
 export const createTicket = async (
   req: Request,
@@ -40,9 +41,12 @@ export const createTicket = async (
 
     const saved = await newTicket.save();
 
+    const timeZone = "America/Sao_Paulo";
+    const zonedDate = toZonedTime(createdAt, timeZone);
+
     const formattedDate = format(
-      saved.createdAt ?? new Date(),
-      "dd/MM/yyyy HH:mm",
+      zonedDate,
+      "'Data da Criação da Nota de Serviço:' dd/MM/yyyy 'no horário de' HH:mm",
       { locale: ptBR }
     );
 
@@ -66,7 +70,7 @@ export const createTicket = async (
 
     // Envia o e-mail
     if (emailEmpresa) {
-      const assunto = `Confirmação da Nota de Serviço - ${notaServico}`;
+      const assunto = `Confirmação da Criação da Nota de Serviço - ${notaServico}`;
       await sendTicketEmail(emailEmpresa, assunto, mensagem);
     }
 

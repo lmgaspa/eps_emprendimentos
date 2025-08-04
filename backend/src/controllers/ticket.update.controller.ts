@@ -3,13 +3,21 @@ import Ticket from '../models/Ticket';
 import { sendTicketEmail } from '../utils/emailService';
 import { sendWhatsappMessage } from '../utils/whatsappService';
 import { format } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 import { ptBR } from 'date-fns/locale';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
 const generateFormattedMessage = (ticket: any): { email: string; whatsapp: string } => {
-  const formattedDate = format(new Date(), 'dd/MM/yyyy HH:mm', { locale: ptBR });
+  const timeZone = 'America/Sao_Paulo';
+  const zonedDate = toZonedTime(new Date(), timeZone);
+
+  const formattedDate = format(
+    zonedDate,
+    "'Data da atualização da Nota de Serviço:' dd/MM/yyyy 'no horário de' HH:mm",
+    { locale: ptBR }
+  );
 
   const emailHtml = `
     <p><strong>EPS - EMPRENDIMENTOS</strong> - Sua nota de serviço foi atualizada com os seguintes dados:</p>
@@ -70,7 +78,7 @@ export const patchTicketByNotaServico = async (req: Request, res: Response): Pro
       if (updatedTicket.emailEmpresa) {
         await sendTicketEmail(
           updatedTicket.emailEmpresa,
-          `Atualização do Ticket - ${updatedTicket.notaServico}`,
+          `Atualização da Nota de Serviço - ${updatedTicket.notaServico}`,
           email
         );
       }
